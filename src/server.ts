@@ -1,4 +1,5 @@
 import { ApolloServer, gql } from "apollo-server";
+import { Resolvers } from "./types";
 
 const typeDefs = gql`
   type Movie {
@@ -15,7 +16,7 @@ const typeDefs = gql`
   }
 `;
 
-const resolvers = {
+const resolvers: Resolvers = {
   Query: {
     movies: () => [],
     movie: () => ({
