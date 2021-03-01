@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon --exec ts-node src/server"
+    "start:dev": "nodemon --exec ts-node src/server --ext ts,js",
+    "migrate": "npx prisma migrate dev --preview-featur"
   },
   "keywords": [],
   "author": "",
