@@ -1,13 +1,25 @@
 require("dotenv").config();
+import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
-import schema from "./schema";
+import { buildSchema } from "type-graphql";
+import { UserResolver } from "./users/user.resolver";
 
-const server = new ApolloServer({ schema });
+const main = async () => {
+  const schema = await buildSchema({
+    resolvers: [UserResolver],
+    emitSchemaFile: true,
+    validate: true
+  });
 
-const PORT = process.env.PORT;
+  const server = new ApolloServer({ schema });
 
-server
-  .listen(PORT)
-  .then(() =>
-    console.log(`🚀 Sever is running on http://localhost:${PORT} ✅`)
-  );
+  const PORT = process.env.PORT;
+
+  server
+    .listen(PORT)
+    .then(() =>
+      console.log(`🚀 Sever is running on http://localhost:${PORT} ✅`)
+    );
+};
+
+main();
