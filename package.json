@@ -5,14 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon --exec ts-node src/server --ext ts,js",
-    "migrate": "npx prisma migrate dev --preview-featur",
+    "migrate": "npx prisma migrate dev --preview-feature",
     "studio": "npx prisma studio"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^2.17.0",
+    "@prisma/client": "^2.18.0",
     "apollo-server": "^2.21.0",
     "dotenv": "^8.2.0",
     "graphql": "^15.5.0",
@@ -23,7 +23,7 @@
     "@babel/node": "^7.13.0",
     "@babel/preset-env": "^7.13.8",
     "nodemon": "^2.0.7",
-    "prisma": "^2.17.0",
+    "prisma": "^2.18.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.2"
   }
