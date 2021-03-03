@@ -4,7 +4,11 @@
 # -----------------------------------------------
 
 input CreateAccountInput {
+  email: String!
+  firstName: String!
+  lastName: String
   password: String!
+  username: String!
 }
 
 type CreateAccountOutput {

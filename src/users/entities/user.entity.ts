@@ -1,34 +1,35 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, InputType, ObjectType } from "type-graphql";
 import { IsEmail, IsOptional, IsString } from "class-validator";
 
+@InputType()
 @ObjectType()
 export class User {
   @Field((type) => String)
   @IsString()
-  id: string;
+  readonly id: string;
 
   @Field((type) => String)
   @IsString()
-  firstName: string;
+  readonly firstName: string;
 
   @Field((type) => String, { nullable: true })
   @IsOptional()
   @IsString()
-  lastName?: string;
+  readonly lastName?: string;
 
   @Field((type) => String)
   @IsString()
-  username: string;
+  readonly username: string;
 
   @Field((type) => String)
   @IsEmail()
-  email: string;
+  readonly email: string;
 
   @Field((type) => String)
   @IsString()
-  createdAt: string;
+  readonly createdAt: string;
 
   @Field((type) => String)
   @IsString()
-  updatedAt: string;
+  readonly updatedAt: string;
 }

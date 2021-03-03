@@ -1,4 +1,5 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import client from "../client";
 import {
   CreateAccountInput,
   CreateAccountOutput
@@ -13,11 +14,16 @@ export class UserResolver {
   }
 
   @Mutation((returns) => CreateAccountOutput)
-  createAccount(
+  async createAccount(
     @Arg("input")
-    { id, firstName, lastName, username, email, password }: CreateAccountInput
-  ): CreateAccountOutput {
-    console.log(id);
+    { firstName, lastName, username, email, password }: CreateAccountInput
+  ): Promise<CreateAccountOutput> {
+    const exsitingUser = await client.user.findFirst({
+      where: {
+        OR: [{ username }, { email }]
+      }
+    });
+    console.log(exsitingUser);
     return {
       ok: true
     };
