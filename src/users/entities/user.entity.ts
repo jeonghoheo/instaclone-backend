@@ -1,12 +1,18 @@
-import { Field, InputType, ObjectType } from "type-graphql";
-import { IsEmail, IsOptional, IsString } from "class-validator";
+import { Field, InputType, Int, ObjectType } from "type-graphql";
+import {
+  IsDate,
+  IsEmail,
+  IsNumber,
+  IsOptional,
+  IsString
+} from "class-validator";
 
 @InputType()
 @ObjectType()
 export class User {
-  @Field((type) => String)
-  @IsString()
-  readonly id: string;
+  @Field((type) => Int)
+  @IsNumber()
+  readonly id: number;
 
   @Field((type) => String)
   @IsString()
@@ -25,11 +31,11 @@ export class User {
   @IsEmail()
   readonly email: string;
 
-  @Field((type) => String)
-  @IsString()
-  readonly createdAt: string;
+  @Field((type) => Date)
+  @IsDate()
+  readonly createdAt: Date;
 
-  @Field((type) => String)
-  @IsString()
-  readonly updatedAt: string;
+  @Field((type) => Date)
+  @IsDate()
+  readonly updatedAt: Date;
 }

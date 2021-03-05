@@ -17,20 +17,31 @@ type CreateAccountOutput {
   user: User
 }
 
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
 type Mutation {
   createAccount(input: CreateAccountInput!): CreateAccountOutput!
 }
 
 type Query {
-  seeProfile(username: String!): User!
+  seeProfile(username: String!): SeeProfileOutput!
+}
+
+type SeeProfileOutput {
+  error: String
+  ok: Boolean!
+  user: User
 }
 
 type User {
-  createdAt: String!
+  createdAt: DateTime!
   email: String!
   firstName: String!
-  id: String!
+  id: Int!
   lastName: String
-  updatedAt: String!
+  updatedAt: DateTime!
   username: String!
 }
