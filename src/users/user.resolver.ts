@@ -7,6 +7,7 @@ import {
 } from "./dtos/create-account.dto";
 import { User } from "./entities/user.entity";
 import { SeeProfileOutput } from "./dtos/see-profile.dto";
+import { LoginInput, LoginOutput } from "./dtos/login.dto";
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -62,8 +63,31 @@ export class UserResolver {
     } catch (error) {
       return {
         ok: false,
-        error
+        error: error.message
       };
     }
+  }
+  @Mutation((returns) => LoginOutput)
+  async login(
+    @Arg("input") { username, password }: LoginInput
+  ): Promise<LoginOutput> {
+    const user = await client.user.findFirst({ where: { username } });
+    if (!user) {
+      return {
+        ok: false,
+        error: "User not found."
+      };
+    }
+    const passwordOk = await bcrypt.compare(password, user.password);
+
+    if (!passwordOk) {
+      return {
+        ok: false,
+        error: "Incorrect password."
+      };
+    }
+    return {
+      ok: true
+    };
   }
 }
