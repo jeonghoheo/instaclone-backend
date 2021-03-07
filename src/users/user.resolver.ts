@@ -1,5 +1,6 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import * as bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
 import client from "../client";
 import {
   CreateAccountInput,
@@ -8,6 +9,7 @@ import {
 import { User } from "./entities/user.entity";
 import { SeeProfileOutput } from "./dtos/see-profile.dto";
 import { LoginInput, LoginOutput } from "./dtos/login.dto";
+import { EditProfileInput, EditProfileOutput } from "./dtos/edit-profile.dto";
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -86,8 +88,16 @@ export class UserResolver {
         error: "Incorrect password."
       };
     }
+    const token = await jwt.sign({ id: user.id }, process.env.SECRET_KEY);
     return {
-      ok: true
+      ok: true,
+      token
     };
+  }
+  @Mutation((returns) => EditProfileOutput)
+  async editProfile(
+    @Arg("input") editProfileInput: EditProfileInput
+  ): Promise<EditProfileOutput> {
+    return { ok: true };
   }
 }

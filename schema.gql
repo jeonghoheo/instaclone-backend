@@ -22,6 +22,19 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
+input EditProfileInput {
+  email: String
+  firstName: String
+  lastName: String
+  password: String
+  username: String
+}
+
+type EditProfileOutput {
+  error: String
+  ok: Boolean!
+}
+
 input LoginInput {
   password: String!
   username: String!
@@ -35,6 +48,7 @@ type LoginOutput {
 
 type Mutation {
   createAccount(input: CreateAccountInput!): CreateAccountOutput!
+  editProfile(input: EditProfileInput!): EditProfileOutput!
   login(input: LoginInput!): LoginOutput!
 }
 
