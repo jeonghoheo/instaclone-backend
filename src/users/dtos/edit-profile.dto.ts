@@ -28,6 +28,10 @@ export class EditProfileInput {
   @IsOptional()
   @IsString()
   readonly password?: string;
+
+  @Field((type) => String)
+  @IsString()
+  readonly token: string;
 }
 
 @ObjectType()

@@ -11,6 +11,11 @@ import { SeeProfileOutput } from "./dtos/see-profile.dto";
 import { LoginInput, LoginOutput } from "./dtos/login.dto";
 import { EditProfileInput, EditProfileOutput } from "./dtos/edit-profile.dto";
 
+interface DecodedToken {
+  id: number;
+  lat: number;
+}
+
 @Resolver((of) => User)
 export class UserResolver {
   @Query((returns) => SeeProfileOutput)
@@ -102,16 +107,18 @@ export class UserResolver {
       lastName,
       username,
       email,
-      password: newPassword
+      password: newPassword,
+      token
     }: EditProfileInput
   ): Promise<EditProfileOutput> {
     try {
+      const verifidToken = await jwt.verify(token, process.env.SECRET_KEY);
       let uglyPassword;
       if (newPassword) {
         uglyPassword = await bcrypt.hash(newPassword, 10);
       }
       const updatedUser = await client.user.update({
-        where: { id: 1 },
+        where: { id: (verifidToken as DecodedToken).id },
         data: {
           firstName,
           lastName,
