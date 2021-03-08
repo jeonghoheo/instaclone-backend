@@ -96,8 +96,42 @@ export class UserResolver {
   }
   @Mutation((returns) => EditProfileOutput)
   async editProfile(
-    @Arg("input") editProfileInput: EditProfileInput
+    @Arg("input")
+    {
+      firstName,
+      lastName,
+      username,
+      email,
+      password: newPassword
+    }: EditProfileInput
   ): Promise<EditProfileOutput> {
-    return { ok: true };
+    try {
+      let uglyPassword;
+      if (newPassword) {
+        uglyPassword = await bcrypt.hash(newPassword, 10);
+      }
+      const updatedUser = await client.user.update({
+        where: { id: 1 },
+        data: {
+          firstName,
+          lastName,
+          username,
+          email,
+          ...(uglyPassword && { password: uglyPassword })
+        }
+      });
+      if (updatedUser) {
+        return {
+          ok: true
+        };
+      } else {
+        throw new Error("Can't update user");
+      }
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message
+      };
+    }
   }
 }
