@@ -1,4 +1,4 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import client from "../client";
@@ -10,6 +10,7 @@ import { User } from "./entities/user.entity";
 import { SeeProfileOutput } from "./dtos/see-profile.dto";
 import { LoginInput, LoginOutput } from "./dtos/login.dto";
 import { EditProfileInput, EditProfileOutput } from "./dtos/edit-profile.dto";
+import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
 
 interface DecodedToken {
   id: number;
@@ -99,6 +100,8 @@ export class UserResolver {
       token
     };
   }
+
+  @Authorized()
   @Mutation((returns) => EditProfileOutput)
   async editProfile(
     @Arg("input")
@@ -107,18 +110,17 @@ export class UserResolver {
       lastName,
       username,
       email,
-      password: newPassword,
-      token
-    }: EditProfileInput
+      password: newPassword
+    }: EditProfileInput,
+    @Ctx() context: ContextType
   ): Promise<EditProfileOutput> {
     try {
-      const verifidToken = await jwt.verify(token, process.env.SECRET_KEY);
       let uglyPassword;
       if (newPassword) {
         uglyPassword = await bcrypt.hash(newPassword, 10);
       }
       const updatedUser = await client.user.update({
-        where: { id: (verifidToken as DecodedToken).id },
+        where: { id: context.user.id },
         data: {
           firstName,
           lastName,

@@ -27,7 +27,6 @@ input EditProfileInput {
   firstName: String
   lastName: String
   password: String
-  token: String!
   username: String
 }
 
