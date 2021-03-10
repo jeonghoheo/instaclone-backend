@@ -12,11 +12,6 @@ import { LoginInput, LoginOutput } from "./dtos/login.dto";
 import { EditProfileInput, EditProfileOutput } from "./dtos/edit-profile.dto";
 import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
 
-interface DecodedToken {
-  id: number;
-  lat: number;
-}
-
 @Resolver((of) => User)
 export class UserResolver {
   @Query((returns) => SeeProfileOutput)
@@ -110,7 +105,8 @@ export class UserResolver {
       lastName,
       username,
       email,
-      password: newPassword
+      password: newPassword,
+      bio
     }: EditProfileInput,
     @Ctx() context: ContextType
   ): Promise<EditProfileOutput> {
@@ -126,6 +122,7 @@ export class UserResolver {
           lastName,
           username,
           email,
+          bio,
           ...(uglyPassword && { password: uglyPassword })
         }
       });

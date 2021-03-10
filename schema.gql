@@ -23,6 +23,7 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 scalar DateTime
 
 input EditProfileInput {
+  bio: String
   email: String
   firstName: String
   lastName: String
@@ -63,6 +64,8 @@ type SeeProfileOutput {
 }
 
 type User {
+  avatar: String
+  bio: String
   createdAt: DateTime!
   email: String!
   firstName: String!

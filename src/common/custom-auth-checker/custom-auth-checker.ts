@@ -7,7 +7,6 @@ interface DecodedToken {
   id: number;
   lat: number;
 }
-
 export interface ContextType {
   authorization: string;
   user?: User;

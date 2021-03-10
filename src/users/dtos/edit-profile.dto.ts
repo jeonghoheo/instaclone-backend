@@ -28,6 +28,11 @@ export class EditProfileInput {
   @IsOptional()
   @IsString()
   readonly password?: string;
+
+  @Field((type) => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  readonly bio?: string;
 }
 
 @ObjectType()

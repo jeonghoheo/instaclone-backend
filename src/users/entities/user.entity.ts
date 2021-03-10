@@ -38,4 +38,14 @@ export class User {
   @Field((type) => Date)
   @IsDate()
   readonly updatedAt: Date;
+
+  @Field((type) => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  readonly bio?: string;
+
+  @Field((type) => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  readonly avatar?: string;
 }

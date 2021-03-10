@@ -1,12 +1,12 @@
 require("dotenv").config();
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
-import { buildSchema } from "type-graphql";
+import { buildTypeDefsAndResolvers } from "type-graphql";
 import { UserResolver } from "./users/user.resolver";
 import { customAuthChecker } from "./common/custom-auth-checker/custom-auth-checker";
 
 const main = async () => {
-  const schema = await buildSchema({
+  const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
     resolvers: [UserResolver],
     emitSchemaFile: true,
     validate: true,
@@ -14,7 +14,8 @@ const main = async () => {
   });
 
   const server = new ApolloServer({
-    schema,
+    typeDefs,
+    resolvers,
     context: ({ req }) => {
       const context = {
         authorization: req.headers.authorization
