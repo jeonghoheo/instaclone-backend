@@ -16,6 +16,7 @@ const main = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    uploads: false,
     context: ({ req }) => {
       const context = {
         authorization: req.headers.authorization

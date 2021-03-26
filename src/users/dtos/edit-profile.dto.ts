@@ -1,6 +1,7 @@
 import { IsEmail, IsOptional, IsString } from "class-validator";
 import { Field, InputType, ObjectType } from "type-graphql";
 import { CommonOutput } from "../../common/common.dto";
+import { GraphQLUpload } from "graphql-upload";
 
 @InputType()
 export class EditProfileInput {
@@ -33,6 +34,11 @@ export class EditProfileInput {
   @IsOptional()
   @IsString()
   readonly bio?: string;
+
+  @Field((type) => GraphQLUpload, { nullable: true })
+  @IsOptional()
+  @IsString()
+  readonly avatar?: string;
 }
 
 @ObjectType()

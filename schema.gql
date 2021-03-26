@@ -23,6 +23,7 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 scalar DateTime
 
 input EditProfileInput {
+  avatar: Upload
   bio: String
   email: String
   firstName: String
@@ -63,8 +64,11 @@ type SeeProfileOutput {
   user: User
 }
 
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 type User {
-  avatar: String
+  avatar: Upload
   bio: String
   createdAt: DateTime!
   email: String!

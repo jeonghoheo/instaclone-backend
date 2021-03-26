@@ -19,6 +19,7 @@
     "dotenv": "^8.2.0",
     "graphql": "^15.5.0",
     "graphql-tools": "^7.0.4",
+    "graphql-upload": "^11.0.0",
     "jsonwebtoken": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1"
@@ -28,6 +29,7 @@
     "@babel/node": "^7.13.0",
     "@babel/preset-env": "^7.13.8",
     "@types/bcrypt": "^3.0.0",
+    "@types/graphql-upload": "^8.0.4",
     "@types/jsonwebtoken": "^8.5.0",
     "nodemon": "^2.0.7",
     "prisma": "^2.18.0",

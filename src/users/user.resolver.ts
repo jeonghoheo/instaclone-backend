@@ -106,7 +106,8 @@ export class UserResolver {
       username,
       email,
       password: newPassword,
-      bio
+      bio,
+      avatar
     }: EditProfileInput,
     @Ctx() context: ContextType
   ): Promise<EditProfileOutput> {
