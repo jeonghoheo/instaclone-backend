@@ -1,7 +1,11 @@
 require("dotenv").config();
 import "reflect-metadata";
-import { ApolloServer } from "apollo-server";
+import * as express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { graphqlHTTP } from "express-graphql";
+import { graphqlUploadExpress } from "graphql-upload";
 import { buildTypeDefsAndResolvers } from "type-graphql";
+import { makeExecutableSchema } from "graphql-tools";
 import { UserResolver } from "./users/user.resolver";
 import { customAuthChecker } from "./common/custom-auth-checker/custom-auth-checker";
 
@@ -13,9 +17,10 @@ const main = async () => {
     authChecker: customAuthChecker
   });
 
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
     uploads: false,
     context: ({ req }) => {
       const context = {
@@ -24,14 +29,23 @@ const main = async () => {
       return context;
     }
   });
+  await server.start();
+
+  const app = express();
+
+  app.use(
+    "/graphql",
+    graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
+    graphqlHTTP({ schema })
+  );
 
   const PORT = process.env.PORT;
 
-  server
-    .listen(PORT)
-    .then(() =>
-      console.log(`🚀 Sever is running on http://localhost:${PORT} ✅`)
-    );
+  server.applyMiddleware({ app });
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Sever is running on http://localhost:${PORT} ✅`);
+  });
 };
 
 main();

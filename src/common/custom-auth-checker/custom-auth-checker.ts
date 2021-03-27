@@ -8,7 +8,23 @@ interface DecodedToken {
   lat: number;
 }
 export interface ContextType {
-  authorization: string;
+  headers: {
+    host: string;
+    connection: string;
+    "content-length": string;
+    "sec-ch-ua": string;
+    accept: string;
+    authorization: string;
+    "sec-ch-ua-mobile": string;
+    "user-agent": string;
+    "content-type": string;
+    origin: string;
+    "sec-fetch-site": string;
+    "sec-fetch-mode": string;
+    "sec-fetch-dest": string;
+    "accept-encoding": string;
+    "accept-language": string;
+  };
   user?: User;
 }
 
@@ -17,7 +33,9 @@ export const customAuthChecker: AuthChecker<ContextType> = async (
   roles
 ) => {
   try {
-    const { authorization } = context;
+    const {
+      headers: { authorization }
+    } = context;
     if (authorization) {
       const verifidToken = await jwt.verify(
         authorization,

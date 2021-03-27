@@ -68,7 +68,7 @@ type SeeProfileOutput {
 scalar Upload
 
 type User {
-  avatar: Upload
+  avatar: String
   bio: String
   createdAt: DateTime!
   email: String!

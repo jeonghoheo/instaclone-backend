@@ -1,5 +1,4 @@
 import { Field, InputType, Int, ObjectType } from "type-graphql";
-import { GraphQLUpload } from "graphql-upload";
 import {
   IsDate,
   IsEmail,
@@ -45,7 +44,7 @@ export class User {
   @IsString()
   readonly bio?: string;
 
-  @Field((type) => GraphQLUpload, { nullable: true })
+  @Field((type) => String, { nullable: true })
   @IsOptional()
   @IsString()
   readonly avatar?: string;

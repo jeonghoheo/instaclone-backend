@@ -111,6 +111,7 @@ export class UserResolver {
     }: EditProfileInput,
     @Ctx() context: ContextType
   ): Promise<EditProfileOutput> {
+    console.log(avatar);
     try {
       let uglyPassword;
       if (newPassword) {
