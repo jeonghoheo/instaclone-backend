@@ -1,6 +1,7 @@
 require("dotenv").config();
 import "reflect-metadata";
 import * as express from "express";
+import expressPlayground from "graphql-playground-middleware-express";
 import { ApolloServer } from "apollo-server-express";
 import { graphqlHTTP } from "express-graphql";
 import { graphqlUploadExpress } from "graphql-upload";
@@ -33,6 +34,8 @@ const main = async () => {
 
   const app = express();
 
+  app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
+
   app.use(
     "/graphql",
     graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
@@ -43,8 +46,10 @@ const main = async () => {
 
   server.applyMiddleware({ app });
 
-  app.listen(PORT, () => {
-    console.log(`🚀 Sever is running on http://localhost:${PORT} ✅`);
+  app.listen({ port: PORT }, () => {
+    console.log(
+      `🚀 Sever is running on http://localhost:${PORT}${server.graphqlPath} ✅`
+    );
   });
 };
 

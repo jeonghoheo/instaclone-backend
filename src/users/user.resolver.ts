@@ -1,3 +1,4 @@
+import { createWriteStream } from "fs";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
@@ -111,7 +112,13 @@ export class UserResolver {
     }: EditProfileInput,
     @Ctx() context: ContextType
   ): Promise<EditProfileOutput> {
-    console.log(avatar);
+    const { filename, createReadStream } = await avatar;
+    const readStream = createReadStream();
+    const writeStream = createWriteStream(
+      `${process.cwd()}/uploads/${filename}`
+    );
+    readStream.pipe(writeStream);
+
     try {
       let uglyPassword;
       if (newPassword) {
