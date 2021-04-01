@@ -35,7 +35,7 @@ const main = async () => {
   const app = express();
 
   app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
-
+  app.use("/static", express.static("uploads"));
   app.use(
     "/graphql",
     graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),

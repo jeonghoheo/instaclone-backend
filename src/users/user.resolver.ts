@@ -112,12 +112,17 @@ export class UserResolver {
     }: EditProfileInput,
     @Ctx() context: ContextType
   ): Promise<EditProfileOutput> {
-    const { filename, createReadStream } = await avatar;
-    const readStream = createReadStream();
-    const writeStream = createWriteStream(
-      `${process.cwd()}/uploads/${filename}`
-    );
-    readStream.pipe(writeStream);
+    let avatarUrl: string;
+    if (avatar) {
+      const { filename, createReadStream } = await avatar;
+      const newFileName = `${context.user.id}-${Date.now()}-${filename}`;
+      const readStream = createReadStream();
+      const writeStream = createWriteStream(
+        `${process.cwd()}/uploads/${newFileName}`
+      );
+      readStream.pipe(writeStream);
+      avatarUrl = `http://localhost:4000/static/${newFileName}`;
+    }
 
     try {
       let uglyPassword;
@@ -132,7 +137,8 @@ export class UserResolver {
           username,
           email,
           bio,
-          ...(uglyPassword && { password: uglyPassword })
+          ...(uglyPassword && { password: uglyPassword }),
+          ...(avatarUrl && { avatar: avatarUrl })
         }
       });
       if (updatedUser) {
