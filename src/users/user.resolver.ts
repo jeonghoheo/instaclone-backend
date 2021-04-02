@@ -1,5 +1,13 @@
 import { createWriteStream } from "fs";
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Args,
+  Authorized,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver
+} from "type-graphql";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import client from "../client";
@@ -12,6 +20,7 @@ import { SeeProfileOutput } from "./dtos/see-profile.dto";
 import { LoginInput, LoginOutput } from "./dtos/login.dto";
 import { EditProfileInput, EditProfileOutput } from "./dtos/edit-profile.dto";
 import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
+import { FollowUserInput, FollowUserOutput } from "./dtos/follow-user.dto";
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -154,5 +163,35 @@ export class UserResolver {
         error: error.message
       };
     }
+  }
+
+  @Authorized()
+  @Mutation((returns) => FollowUserOutput)
+  async followUser(
+    @Args() { username }: FollowUserInput,
+    @Ctx() context: ContextType
+  ) {
+    const ok = await client.user.findUnique({ where: { username } });
+    if (!ok) {
+      return {
+        ok: false,
+        error: "That user does not exist"
+      };
+    }
+    await client.user.update({
+      where: {
+        id: context.user.id
+      },
+      data: {
+        following: {
+          connect: {
+            username
+          }
+        }
+      }
+    });
+    return {
+      ok: true
+    };
   }
 }
