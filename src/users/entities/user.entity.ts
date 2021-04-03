@@ -48,4 +48,12 @@ export class User {
   @IsOptional()
   @IsString()
   readonly avatar?: string;
+
+  @Field((type) => [User], { nullable: true })
+  @IsOptional()
+  readonly following?: User[];
+
+  @Field((type) => [User], { nullable: true })
+  @IsOptional()
+  readonly followers?: User[];
 }

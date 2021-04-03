@@ -58,6 +58,7 @@ type Mutation {
   editProfile(input: EditProfileInput!): EditProfileOutput!
   followUser(username: String!): FollowUserOutput!
   login(input: LoginInput!): LoginOutput!
+  unFollowUser(username: String!): UnFollowUserOutput!
 }
 
 type Query {
@@ -70,6 +71,11 @@ type SeeProfileOutput {
   user: User
 }
 
+type UnFollowUserOutput {
+  error: String
+  ok: Boolean!
+}
+
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
@@ -79,6 +85,8 @@ type User {
   createdAt: DateTime!
   email: String!
   firstName: String!
+  followers: [User!]
+  following: [User!]
   id: Int!
   lastName: String
   updatedAt: DateTime!

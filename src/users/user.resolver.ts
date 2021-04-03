@@ -21,6 +21,10 @@ import { LoginInput, LoginOutput } from "./dtos/login.dto";
 import { EditProfileInput, EditProfileOutput } from "./dtos/edit-profile.dto";
 import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
 import { FollowUserInput, FollowUserOutput } from "./dtos/follow-user.dto";
+import {
+  UnFollowUserInput,
+  UnFollowUserOutput
+} from "./dtos/un-follow-user.dto";
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -31,6 +35,10 @@ export class UserResolver {
     const user = await client.user.findUnique({
       where: {
         username
+      },
+      include: {
+        following: true,
+        followers: true
       }
     });
     if (!user) {
@@ -185,6 +193,36 @@ export class UserResolver {
       data: {
         following: {
           connect: {
+            username
+          }
+        }
+      }
+    });
+    return {
+      ok: true
+    };
+  }
+
+  @Authorized()
+  @Mutation((returns) => UnFollowUserOutput)
+  async unFollowUser(
+    @Args() { username }: UnFollowUserInput,
+    @Ctx() context: ContextType
+  ) {
+    const ok = await client.user.findUnique({ where: { username } });
+    if (!ok) {
+      return {
+        ok: false,
+        error: "That user does not exist"
+      };
+    }
+    await client.user.update({
+      where: {
+        id: context.user.id
+      },
+      data: {
+        following: {
+          disconnect: {
             username
           }
         }
