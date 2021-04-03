@@ -25,6 +25,10 @@ import {
   UnFollowUserInput,
   UnFollowUserOutput
 } from "./dtos/un-follow-user.dto";
+import {
+  SeeFollowersInput,
+  SeeFollowersOutput
+} from "./dtos/see-followers.dto";
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -230,6 +234,35 @@ export class UserResolver {
     });
     return {
       ok: true
+    };
+  }
+
+  @Query((returns) => SeeFollowersOutput)
+  async seeFollowers(
+    @Arg("input") { username, page }: SeeFollowersInput
+  ): Promise<SeeFollowersOutput> {
+    const ok = await client.user.findUnique({ where: { username } });
+    if (!ok) {
+      return {
+        ok: false,
+        error: "That user does not exist"
+      };
+    }
+    const take = 5;
+    const aFollowers = await client.user
+      .findUnique({
+        where: {
+          username
+        }
+      })
+      .followers({
+        skip: (page - 1) * take,
+        take
+      });
+
+    return {
+      ok: true,
+      followers: aFollowers
     };
   }
 }

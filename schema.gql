@@ -62,7 +62,19 @@ type Mutation {
 }
 
 type Query {
+  seeFollowers(input: SeeFollowersInput!): SeeFollowersOutput!
   seeProfile(username: String!): SeeProfileOutput!
+}
+
+input SeeFollowersInput {
+  page: Int!
+  username: String!
+}
+
+type SeeFollowersOutput {
+  error: String
+  followers: [User!]
+  ok: Boolean!
 }
 
 type SeeProfileOutput {
