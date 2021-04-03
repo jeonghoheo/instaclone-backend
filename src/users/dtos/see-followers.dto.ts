@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsString } from "class-validator";
+import { IsInt, IsNumber, IsOptional, IsString } from "class-validator";
 import { Field, InputType, Int, ObjectType } from "type-graphql";
 import { CommonOutput } from "../../common/common.dto";
 import { User } from "../entities/user.entity";
@@ -19,4 +19,8 @@ export class SeeFollowersOutput extends CommonOutput {
   @Field((type) => [User], { nullable: true })
   @IsOptional()
   readonly followers?: User[];
+
+  @Field((type) => Number, { nullable: true })
+  @IsNumber()
+  readonly totalPages?: number;
 }

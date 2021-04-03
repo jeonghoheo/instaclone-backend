@@ -75,6 +75,7 @@ type SeeFollowersOutput {
   error: String
   followers: [User!]
   ok: Boolean!
+  totalPages: Float
 }
 
 type SeeProfileOutput {

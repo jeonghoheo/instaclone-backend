@@ -241,7 +241,10 @@ export class UserResolver {
   async seeFollowers(
     @Arg("input") { username, page }: SeeFollowersInput
   ): Promise<SeeFollowersOutput> {
-    const ok = await client.user.findUnique({ where: { username } });
+    const ok = await client.user.findUnique({
+      where: { username },
+      select: { id: true }
+    });
     if (!ok) {
       return {
         ok: false,
@@ -259,10 +262,20 @@ export class UserResolver {
         skip: (page - 1) * take,
         take
       });
-
+    // username을 following 하는 유저 수를 카운트 한다.
+    const totalFollowers = await client.user.count({
+      where: {
+        following: {
+          some: {
+            username
+          }
+        }
+      }
+    });
     return {
       ok: true,
-      followers: aFollowers
+      followers: aFollowers,
+      totalPages: Math.ceil(totalFollowers / 5)
     };
   }
 }
