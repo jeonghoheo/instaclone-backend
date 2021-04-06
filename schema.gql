@@ -63,6 +63,7 @@ type Mutation {
 
 type Query {
   seeFollowers(input: SeeFollowersInput!): SeeFollowersOutput!
+  seeFollowing(input: SeeFollowingInupt!): SeeFollowingOutput!
   seeProfile(username: String!): SeeProfileOutput!
 }
 
@@ -76,6 +77,17 @@ type SeeFollowersOutput {
   followers: [User!]
   ok: Boolean!
   totalPages: Float
+}
+
+input SeeFollowingInupt {
+  lastId: Float
+  username: String!
+}
+
+type SeeFollowingOutput {
+  error: String
+  following: [User!]
+  ok: Boolean!
 }
 
 type SeeProfileOutput {

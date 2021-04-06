@@ -29,6 +29,10 @@ import {
   SeeFollowersInput,
   SeeFollowersOutput
 } from "./dtos/see-followers.dto";
+import {
+  SeeFollowingInupt,
+  SeeFollowingOutput
+} from "./dtos/see-following.dto";
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -276,6 +280,44 @@ export class UserResolver {
       ok: true,
       followers: aFollowers,
       totalPages: Math.ceil(totalFollowers / 5)
+    };
+  }
+
+  @Query((returns) => SeeFollowingOutput)
+  async seeFollowing(
+    @Arg("input") { username, lastId }: SeeFollowingInupt
+  ): Promise<SeeFollowingOutput> {
+    const ok = await client.user.findUnique({
+      where: { username },
+      select: { id: true }
+    });
+    if (!ok) {
+      return {
+        ok: false,
+        error: "That user does not exist"
+      };
+    }
+    const take: number = 5;
+    const skip: number = lastId ? 1 : 0;
+
+    const following = await client.user
+      .findUnique({
+        where: {
+          username
+        }
+      })
+      .following({
+        take,
+        skip,
+        ...(lastId && {
+          cursor: {
+            id: lastId
+          }
+        })
+      });
+    return {
+      ok: true,
+      following
     };
   }
 }
