@@ -114,6 +114,8 @@ type User {
   following: [User!]
   id: Int!
   lastName: String
+  totalFollowers: Float!
+  totalFollowing: Float!
   updatedAt: DateTime!
   username: String!
 }

@@ -4,9 +4,11 @@ import {
   Args,
   Authorized,
   Ctx,
+  FieldResolver,
   Mutation,
   Query,
-  Resolver
+  Resolver,
+  Root
 } from "type-graphql";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
@@ -36,6 +38,18 @@ import {
 
 @Resolver((of) => User)
 export class UserResolver {
+  @FieldResolver()
+  async totalFollowing(@Root() user: User): Promise<number> {
+    console.log(user);
+    return 77;
+  }
+
+  @FieldResolver()
+  async totalFollowers(@Root() user: User): Promise<number> {
+    console.log(user);
+    return 77;
+  }
+
   @Query((returns) => SeeProfileOutput)
   async seeProfile(
     @Arg("username") username: string

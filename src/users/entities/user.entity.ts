@@ -1,4 +1,4 @@
-import { Field, InputType, Int, ObjectType } from "type-graphql";
+import { Field, InputType, Int, ObjectType, Root } from "type-graphql";
 import {
   IsDate,
   IsEmail,
@@ -56,4 +56,14 @@ export class User {
   @Field((type) => [User], { nullable: true })
   @IsOptional()
   readonly followers?: User[];
+
+  @Field((type) => Number)
+  @IsOptional()
+  @IsNumber()
+  totalFollowing?: number;
+
+  @Field((type) => Number)
+  @IsOptional()
+  @IsNumber()
+  totalFollowers?: number;
 }
