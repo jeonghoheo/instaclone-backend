@@ -377,4 +377,31 @@ export class UserResolver {
       return false;
     }
   }
+
+  @Authorized()
+  @FieldResolver()
+  async isFollowing(
+    @Root() { id }: User,
+    @Ctx() { user }: ContextType
+  ): Promise<boolean> {
+    try {
+      if (!user) {
+        return false;
+      }
+      const exists = await client.user.count({
+        where: {
+          username: user.username,
+          following: {
+            some: {
+              id
+            }
+          }
+        }
+      });
+      return Boolean(exists);
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
 }

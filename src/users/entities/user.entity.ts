@@ -72,4 +72,9 @@ export class User {
   @IsOptional()
   @IsBoolean()
   isMe?: boolean;
+
+  @Field((type) => Boolean)
+  @IsOptional()
+  @IsBoolean()
+  isFollowing?: boolean;
 }
