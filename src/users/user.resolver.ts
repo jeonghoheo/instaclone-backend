@@ -38,18 +38,6 @@ import {
 
 @Resolver((of) => User)
 export class UserResolver {
-  @FieldResolver()
-  async totalFollowing(@Root() user: User): Promise<number> {
-    console.log(user);
-    return 77;
-  }
-
-  @FieldResolver()
-  async totalFollowers(@Root() user: User): Promise<number> {
-    console.log(user);
-    return 77;
-  }
-
   @Query((returns) => SeeProfileOutput)
   async seeProfile(
     @Arg("username") username: string
@@ -333,5 +321,60 @@ export class UserResolver {
       ok: true,
       following
     };
+  }
+
+  @FieldResolver()
+  async totalFollowing(@Root() { id }: User): Promise<number | null> {
+    try {
+      const totalFollowingCount = await client.user.count({
+        where: {
+          followers: {
+            some: {
+              id
+            }
+          }
+        }
+      });
+      return totalFollowingCount;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
+  @FieldResolver()
+  async totalFollowers(@Root() { id }: User): Promise<number | null> {
+    try {
+      const totalFollowersCount = await client.user.count({
+        where: {
+          following: {
+            some: {
+              id
+            }
+          }
+        }
+      });
+      return totalFollowersCount;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
+  @Authorized()
+  @FieldResolver()
+  async isMe(
+    @Root() { id }: User,
+    @Ctx() { user }: ContextType
+  ): Promise<boolean> {
+    try {
+      if (!user) {
+        return false;
+      }
+      return id === user.id;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { Field, InputType, Int, ObjectType, Root } from "type-graphql";
 import {
+  IsBoolean,
   IsDate,
   IsEmail,
   IsNumber,
@@ -66,4 +67,9 @@ export class User {
   @IsOptional()
   @IsNumber()
   totalFollowers?: number;
+
+  @Field((type) => Boolean)
+  @IsOptional()
+  @IsBoolean()
+  isMe?: boolean;
 }
