@@ -1,5 +1,26 @@
-import { IsBoolean, IsOptional, IsString } from "class-validator";
-import { Field, ObjectType } from "type-graphql";
+import {
+  IsBoolean,
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsString
+} from "class-validator";
+import { Field, Int, ObjectType } from "type-graphql";
+
+@ObjectType()
+export class Common {
+  @Field((type) => Int)
+  @IsNumber()
+  readonly id: number;
+
+  @Field((type) => Date)
+  @IsDate()
+  readonly createdAt: Date;
+
+  @Field((type) => Date)
+  @IsDate()
+  readonly updatedAt: Date;
+}
 
 @ObjectType()
 export class CommonOutput {

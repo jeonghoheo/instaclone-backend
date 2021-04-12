@@ -42,6 +42,14 @@ type FollowUserOutput {
   ok: Boolean!
 }
 
+type HashTag {
+  createdAt: DateTime!
+  hashtag: String!
+  id: Int!
+  photos: [Photo!]
+  updatedAt: DateTime!
+}
+
 input LoginInput {
   password: String!
   username: String!
@@ -59,6 +67,17 @@ type Mutation {
   followUser(username: String!): FollowUserOutput!
   login(input: LoginInput!): LoginOutput!
   unFollowUser(username: String!): UnFollowUserOutput!
+  uploadPhoto(input: UploadPhotoInput!): UploadPhotoOutput!
+}
+
+type Photo {
+  caption: String
+  createdAt: DateTime!
+  file: String!
+  hashtag: [HashTag!]
+  id: Int!
+  updatedAt: DateTime!
+  user: User!
 }
 
 type Query {
@@ -103,6 +122,17 @@ type UnFollowUserOutput {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input UploadPhotoInput {
+  caption: String!
+  file: String!
+}
+
+type UploadPhotoOutput {
+  error: String
+  ok: Boolean!
+  photo: Photo!
+}
 
 type User {
   avatar: String

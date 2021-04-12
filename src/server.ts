@@ -9,10 +9,11 @@ import { buildTypeDefsAndResolvers } from "type-graphql";
 import { makeExecutableSchema } from "graphql-tools";
 import { UserResolver } from "./users/user.resolver";
 import { customAuthChecker } from "./common/custom-auth-checker/custom-auth-checker";
+import { PhotoResovler } from "./photos/photo.resolver";
 
 const main = async () => {
   const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
-    resolvers: [UserResolver],
+    resolvers: [UserResolver, PhotoResovler],
     emitSchemaFile: true,
     validate: true,
     authChecker: customAuthChecker
