@@ -38,8 +38,8 @@ model Photo {
 }
 
 model HashTag {
-  id        Int      @id
-  hashtag   String
+  id        Int      @id @default(autoincrement())
+  hashtag   String   @unique
   photos    Photo[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

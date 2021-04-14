@@ -131,7 +131,7 @@ input UploadPhotoInput {
 type UploadPhotoOutput {
   error: String
   ok: Boolean!
-  photo: Photo!
+  photo: Photo
 }
 
 type User {

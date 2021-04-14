@@ -17,6 +17,6 @@ export class UploadPhotoInput {
 
 @ObjectType()
 export class UploadPhotoOutput extends CommonOutput {
-  @Field((type) => Photo)
-  readonly photo: Photo;
+  @Field((type) => Photo, { nullable: true })
+  readonly photo?: Photo;
 }
