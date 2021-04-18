@@ -74,15 +74,17 @@ type Photo {
   caption: String
   createdAt: DateTime!
   file: String!
-  hashtag: [HashTag!]
+  hashtags: [HashTag!]
   id: Int!
   updatedAt: DateTime!
-  user: User!
+  user: User
+  userId: Float!
 }
 
 type Query {
   seeFollowers(input: SeeFollowersInput!): SeeFollowersOutput!
   seeFollowing(input: SeeFollowingInupt!): SeeFollowingOutput!
+  seePhoto(id: Float!): SeePhotoOutput!
   seeProfile(username: String!): SeeProfileOutput!
 }
 
@@ -107,6 +109,12 @@ type SeeFollowingOutput {
   error: String
   following: [User!]
   ok: Boolean!
+}
+
+type SeePhotoOutput {
+  error: String
+  ok: Boolean!
+  photo: Photo
 }
 
 type SeeProfileOutput {

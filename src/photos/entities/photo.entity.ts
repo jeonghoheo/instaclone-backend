@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 import { Field, InputType, ObjectType } from "type-graphql";
 import { Common } from "../../common/common.dto";
 import { User } from "../../users/entities/user.entity";
@@ -6,8 +6,13 @@ import { User } from "../../users/entities/user.entity";
 @InputType()
 @ObjectType()
 export class Photo extends Common {
-  @Field((type) => User)
-  readonly user: User;
+  @Field((type) => User, { nullable: true })
+  @IsOptional()
+  readonly user?: User;
+
+  @Field((type) => Number)
+  @IsNumber()
+  readonly userId: number;
 
   @Field((type) => String)
   @IsString()
@@ -20,7 +25,7 @@ export class Photo extends Common {
 
   @Field((type) => [HashTag], { nullable: true })
   @IsOptional()
-  readonly hashtag?: HashTag[];
+  readonly hashtags?: HashTag[];
 }
 
 @InputType()

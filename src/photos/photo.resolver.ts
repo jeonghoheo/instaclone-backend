@@ -1,6 +1,19 @@
-import { Arg, Authorized, Ctx, Mutation, Resolver } from "type-graphql";
+import { HashTag } from ".prisma/client";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root
+} from "type-graphql";
 import client from "../client";
 import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
+import { SeeProfileOutput } from "../users/dtos/see-profile.dto";
+import { User } from "../users/entities/user.entity";
+import { SeePhotoOutput } from "./dtos/see-photo.dto";
 import { UploadPhotoInput, UploadPhotoOutput } from "./dtos/upload-photo.dto";
 import { Photo } from "./entities/photo.entity";
 
@@ -21,7 +34,7 @@ export class PhotoResovler {
           create: { hashtag }
         }));
       }
-      const newPhoto = await client.photo.create({
+      const photo = await client.photo.create({
         data: {
           file,
           caption,
@@ -35,15 +48,82 @@ export class PhotoResovler {
           })
         }
       });
-      console.log(newPhoto);
       return {
-        ok: true
+        ok: true,
+        photo
       };
     } catch (error) {
       return {
         ok: false,
         error: "Can't upload photo"
       };
+    }
+  }
+
+  @Query((returns) => SeePhotoOutput)
+  async seePhoto(@Arg("id") id: number): Promise<SeePhotoOutput> {
+    try {
+      const photo = await client.photo.findUnique({
+        where: {
+          id
+        }
+      });
+      if (!photo) {
+        return {
+          ok: false,
+          error: "Photo not found."
+        };
+      }
+      return {
+        ok: true,
+        photo
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: "Can't find the Photo"
+      };
+    }
+  }
+
+  @FieldResolver()
+  async user(@Root() { userId }: Photo): Promise<User> {
+    try {
+      const user = await client.user.findUnique({
+        where: {
+          id: userId
+        }
+      });
+      if (!user) {
+        throw new Error("User not found.");
+      }
+      return user;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
+  @FieldResolver()
+  async hashtags(@Root() { id }: Photo): Promise<HashTag[]> {
+    try {
+      const hashtags = await client.hashTag.findMany({
+        where: {
+          photos: {
+            some: {
+              id
+            }
+          }
+        }
+      });
+      if (!hashtags) {
+        throw new Error("Hashtags not found.");
+      }
+      return hashtags;
+    } catch (error) {
+      console.log(error);
+      return null;
     }
   }
 }
