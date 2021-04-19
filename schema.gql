@@ -46,7 +46,8 @@ type HashTag {
   createdAt: DateTime!
   hashtag: String!
   id: Int!
-  photos: [Photo!]
+  photos(page: Float!): [Photo!]
+  totalPhotos: Float
   updatedAt: DateTime!
 }
 
@@ -84,6 +85,7 @@ type Photo {
 type Query {
   seeFollowers(input: SeeFollowersInput!): SeeFollowersOutput!
   seeFollowing(input: SeeFollowingInupt!): SeeFollowingOutput!
+  seeHashtag(hashtag: String!): SeeHashTagOutput!
   seePhoto(id: Float!): SeePhotoOutput!
   seeProfile(username: String!): SeeProfileOutput!
 }
@@ -108,6 +110,12 @@ input SeeFollowingInupt {
 type SeeFollowingOutput {
   error: String
   following: [User!]
+  ok: Boolean!
+}
+
+type SeeHashTagOutput {
+  error: String
+  hashtag: HashTag
   ok: Boolean!
 }
 

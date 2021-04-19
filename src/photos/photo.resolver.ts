@@ -11,7 +11,6 @@ import {
 } from "type-graphql";
 import client from "../client";
 import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
-import { SeeProfileOutput } from "../users/dtos/see-profile.dto";
 import { User } from "../users/entities/user.entity";
 import { SeePhotoOutput } from "./dtos/see-photo.dto";
 import { UploadPhotoInput, UploadPhotoOutput } from "./dtos/upload-photo.dto";

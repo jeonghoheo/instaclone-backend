@@ -1,6 +1,7 @@
 import { IsNumber, IsOptional, IsString } from "class-validator";
 import { Field, InputType, ObjectType } from "type-graphql";
 import { Common } from "../../common/common.dto";
+import { HashTag } from "../../hashtags/entities/hashtag.entity";
 import { User } from "../../users/entities/user.entity";
 
 @InputType()
@@ -26,16 +27,4 @@ export class Photo extends Common {
   @Field((type) => [HashTag], { nullable: true })
   @IsOptional()
   readonly hashtags?: HashTag[];
-}
-
-@InputType()
-@ObjectType()
-class HashTag extends Common {
-  @Field((type) => String)
-  @IsString()
-  readonly hashtag: String;
-
-  @Field((type) => [Photo], { nullable: true })
-  @IsOptional()
-  readonly photos?: Photo[];
 }
