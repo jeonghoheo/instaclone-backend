@@ -22,6 +22,16 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
+input EditPhotoInput {
+  caption: String!
+  id: Float!
+}
+
+type EditPhotoOutput {
+  error: String
+  ok: Boolean!
+}
+
 input EditProfileInput {
   avatar: Upload
   bio: String
@@ -64,6 +74,7 @@ type LoginOutput {
 
 type Mutation {
   createAccount(input: CreateAccountInput!): CreateAccountOutput!
+  editPhoto(input: EditPhotoInput!): EditPhotoOutput!
   editProfile(input: EditProfileInput!): EditProfileOutput!
   followUser(username: String!): FollowUserOutput!
   login(input: LoginInput!): LoginOutput!

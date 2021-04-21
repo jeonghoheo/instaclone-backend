@@ -13,6 +13,7 @@ import {
 import client from "../client";
 import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
 import { User } from "../users/entities/user.entity";
+import { EditPhotoInput, EditPhotoOutput } from "./dtos/edit-photo.dto";
 import {
   SearchPhotosInput,
   SearchPhotosOutput
@@ -116,6 +117,45 @@ export class PhotoResovler {
       return {
         ok: false,
         error: "Can't not find Photos."
+      };
+    }
+  }
+
+  @Authorized()
+  @Mutation((returns) => EditPhotoOutput)
+  async editPhoto(
+    @Arg("input") { id, caption }: EditPhotoInput,
+    @Ctx() { user }: ContextType
+  ): Promise<EditPhotoOutput> {
+    try {
+      const ok = await client.photo.findFirst({
+        where: {
+          id,
+          userId: user.id
+        }
+      });
+      if (!ok) {
+        return {
+          ok: false,
+          error: "Can't update this photo"
+        };
+      }
+      const photo = await client.photo.update({
+        where: {
+          id
+        },
+        data: {
+          caption
+        }
+      });
+      console.log(photo);
+      return {
+        ok: true
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: "Can't update photo"
       };
     }
   }
