@@ -21,6 +21,7 @@ import {
 import { SeePhotoOutput } from "./dtos/see-photo.dto";
 import { UploadPhotoInput, UploadPhotoOutput } from "./dtos/upload-photo.dto";
 import { Photo } from "./entities/photo.entity";
+import { processHashtags } from "./photos.utils";
 @Resolver((of) => Photo)
 export class PhotoResovler {
   @Authorized()
@@ -32,11 +33,7 @@ export class PhotoResovler {
     try {
       let hashtagObj = [];
       if (caption) {
-        const hashtags = caption.match(/#[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\w]+/g);
-        hashtagObj = hashtags.map((hashtag) => ({
-          where: { hashtag },
-          create: { hashtag }
-        }));
+        hashtagObj = processHashtags(caption);
       }
       const photo = await client.photo.create({
         data: {
@@ -128,13 +125,20 @@ export class PhotoResovler {
     @Ctx() { user }: ContextType
   ): Promise<EditPhotoOutput> {
     try {
-      const ok = await client.photo.findFirst({
+      const oldphoto = await client.photo.findFirst({
         where: {
           id,
           userId: user.id
+        },
+        include: {
+          hashtags: {
+            select: {
+              hashtag: true
+            }
+          }
         }
       });
-      if (!ok) {
+      if (!oldphoto) {
         return {
           ok: false,
           error: "Can't update this photo"
@@ -145,7 +149,11 @@ export class PhotoResovler {
           id
         },
         data: {
-          caption
+          caption,
+          hashtags: {
+            disconnect: oldphoto.hashtags,
+            connectOrCreate: processHashtags(caption)
+          }
         }
       });
       console.log(photo);
