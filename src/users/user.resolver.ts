@@ -35,6 +35,7 @@ import {
   SeeFollowingInupt,
   SeeFollowingOutput
 } from "./dtos/see-following.dto";
+import { Photo } from "../photos/entities/photo.entity";
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -402,6 +403,26 @@ export class UserResolver {
     } catch (error) {
       console.log(error);
       return false;
+    }
+  }
+
+  @FieldResolver()
+  async photos(@Root() { id }: User): Promise<Photo[] | null> {
+    try {
+      const photos = await client.user
+        .findUnique({
+          where: {
+            id
+          }
+        })
+        .photos();
+      if (!photos) {
+        return null;
+      }
+      return photos;
+    } catch (error) {
+      console.log(error);
+      return null;
     }
   }
 }

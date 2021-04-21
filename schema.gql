@@ -83,11 +83,18 @@ type Photo {
 }
 
 type Query {
+  searchPhotos(keyword: String!): SearchPhotosOutput!
   seeFollowers(input: SeeFollowersInput!): SeeFollowersOutput!
   seeFollowing(input: SeeFollowingInupt!): SeeFollowingOutput!
   seeHashtag(hashtag: String!): SeeHashTagOutput!
   seePhoto(id: Float!): SeePhotoOutput!
   seeProfile(username: String!): SeeProfileOutput!
+}
+
+type SearchPhotosOutput {
+  error: String
+  ok: Boolean!
+  photos: [Photo!]
 }
 
 input SeeFollowersInput {
@@ -162,6 +169,7 @@ type User {
   isFollowing: Boolean!
   isMe: Boolean!
   lastName: String
+  photos: [Photo!]
   totalFollowers: Float!
   totalFollowing: Float!
   updatedAt: DateTime!

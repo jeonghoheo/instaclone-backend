@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsString
 } from "class-validator";
+import { Photo } from "../../photos/entities/photo.entity";
 
 @InputType()
 @ObjectType()
@@ -49,6 +50,10 @@ export class User {
   @IsOptional()
   @IsString()
   readonly avatar?: string;
+
+  @Field((type) => [Photo], { nullable: true })
+  @IsOptional()
+  readonly photos?: Photo[];
 
   @Field((type) => [User], { nullable: true })
   @IsOptional()

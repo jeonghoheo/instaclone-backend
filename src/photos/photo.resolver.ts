@@ -1,6 +1,7 @@
 import { HashTag } from ".prisma/client";
 import {
   Arg,
+  Args,
   Authorized,
   Ctx,
   FieldResolver,
@@ -12,10 +13,13 @@ import {
 import client from "../client";
 import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
 import { User } from "../users/entities/user.entity";
+import {
+  SearchPhotosInput,
+  SearchPhotosOutput
+} from "./dtos/search-photos.dto";
 import { SeePhotoOutput } from "./dtos/see-photo.dto";
 import { UploadPhotoInput, UploadPhotoOutput } from "./dtos/upload-photo.dto";
 import { Photo } from "./entities/photo.entity";
-
 @Resolver((of) => Photo)
 export class PhotoResovler {
   @Authorized()
@@ -82,6 +86,36 @@ export class PhotoResovler {
       return {
         ok: false,
         error: "Can't find the Photo"
+      };
+    }
+  }
+
+  @Query((returns) => SearchPhotosOutput)
+  async searchPhotos(
+    @Args() { keyword }: SearchPhotosInput
+  ): Promise<SearchPhotosOutput> {
+    try {
+      const photos = await client.photo.findMany({
+        where: {
+          caption: {
+            startsWith: keyword
+          }
+        }
+      });
+      if (!photos) {
+        return {
+          ok: false,
+          error: "Photos not found."
+        };
+      }
+      return {
+        ok: true,
+        photos
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: "Can't not find Photos."
       };
     }
   }
