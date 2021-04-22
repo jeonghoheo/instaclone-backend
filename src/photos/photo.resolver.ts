@@ -18,6 +18,7 @@ import {
   SearchPhotosInput,
   SearchPhotosOutput
 } from "./dtos/search-photos.dto";
+import { SeeFeedOutput } from "./dtos/see-feed.dto";
 import { SeePhotoOutput } from "./dtos/see-photo.dto";
 import { UploadPhotoInput, UploadPhotoOutput } from "./dtos/upload-photo.dto";
 import { Photo } from "./entities/photo.entity";
@@ -164,6 +165,49 @@ export class PhotoResovler {
       return {
         ok: false,
         error: "Can't update photo"
+      };
+    }
+  }
+
+  @Authorized()
+  @Query((returns) => SeeFeedOutput)
+  async seeFeed(@Ctx() { user }: ContextType): Promise<SeeFeedOutput> {
+    try {
+      const photos = await client.photo.findMany({
+        where: {
+          OR: [
+            {
+              user: {
+                followers: {
+                  some: {
+                    id: user.id
+                  }
+                }
+              }
+            },
+            {
+              userId: user.id
+            }
+          ]
+        },
+        orderBy: {
+          createdAt: "desc"
+        }
+      });
+      if (!photos) {
+        return {
+          ok: false,
+          error: "Feeds not found."
+        };
+      }
+      return {
+        ok: true,
+        photos
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: "Can't get feeds"
       };
     }
   }

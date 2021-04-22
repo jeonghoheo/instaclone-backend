@@ -1,7 +1,6 @@
-import { IsNumber, IsOptional, IsString } from "class-validator";
-import { ArgsType, Field, InputType, ObjectType } from "type-graphql";
+import { IsNumber, IsString } from "class-validator";
+import { Field, InputType, ObjectType } from "type-graphql";
 import { CommonOutput } from "../../common/common.dto";
-import { Photo } from "../entities/photo.entity";
 
 @InputType()
 @ObjectType()

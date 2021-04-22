@@ -97,6 +97,7 @@ type Photo {
 
 type Query {
   searchPhotos(keyword: String!): SearchPhotosOutput!
+  seeFeed: SeeFeedOutput!
   seeFollowers(input: SeeFollowersInput!): SeeFollowersOutput!
   seeFollowing(input: SeeFollowingInupt!): SeeFollowingOutput!
   seeHashtag(hashtag: String!): SeeHashTagOutput!
@@ -106,6 +107,12 @@ type Query {
 }
 
 type SearchPhotosOutput {
+  error: String
+  ok: Boolean!
+  photos: [Photo!]
+}
+
+type SeeFeedOutput {
   error: String
   ok: Boolean!
   photos: [Photo!]
@@ -142,8 +149,8 @@ type SeeHashTagOutput {
 
 type SeePhotoLikesOutput {
   error: String
-  likes: [User!]
   ok: Boolean!
+  users: [User!]
 }
 
 type SeePhotoOutput {

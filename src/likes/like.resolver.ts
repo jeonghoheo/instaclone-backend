@@ -84,7 +84,7 @@ export class LikeResolver {
       });
       return {
         ok: true,
-        likes: likes.map((like) => like.user)
+        users: likes.map((like) => like.user)
       };
     } catch (error) {
       console.log(error);

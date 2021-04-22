@@ -14,5 +14,5 @@ export class SeePhotoLikesInput {
 export class SeePhotoLikesOutput extends CommonOutput {
   @Field((type) => [User], { nullable: true })
   @IsOptional()
-  readonly likes?: User[];
+  readonly users?: User[];
 }
