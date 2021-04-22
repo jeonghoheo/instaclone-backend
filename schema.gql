@@ -61,6 +61,16 @@ type HashTag {
   updatedAt: DateTime!
 }
 
+type Like {
+  createdAt: DateTime!
+  id: Int!
+  photo: Photo!
+  photoId: Int!
+  updatedAt: DateTime!
+  user: User!
+  userId: Int!
+}
+
 input LoginInput {
   password: String!
   username: String!
@@ -78,6 +88,7 @@ type Mutation {
   editProfile(input: EditProfileInput!): EditProfileOutput!
   followUser(username: String!): FollowUserOutput!
   login(input: LoginInput!): LoginOutput!
+  toggleLike(id: Int!): ToggleLikeOutput!
   unFollowUser(username: String!): UnFollowUserOutput!
   uploadPhoto(input: UploadPhotoInput!): UploadPhotoOutput!
 }
@@ -147,6 +158,12 @@ type SeeProfileOutput {
   error: String
   ok: Boolean!
   user: User
+}
+
+type ToggleLikeOutput {
+  error: String
+  like: Like
+  ok: Boolean!
 }
 
 type UnFollowUserOutput {

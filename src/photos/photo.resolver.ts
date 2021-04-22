@@ -144,7 +144,7 @@ export class PhotoResovler {
           error: "Can't update this photo"
         };
       }
-      const photo = await client.photo.update({
+      await client.photo.update({
         where: {
           id
         },
@@ -156,7 +156,7 @@ export class PhotoResovler {
           }
         }
       });
-      console.log(photo);
+
       return {
         ok: true
       };
