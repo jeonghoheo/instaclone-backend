@@ -207,4 +207,18 @@ export class PhotoResovler {
       return null;
     }
   }
+
+  @FieldResolver()
+  async likes(@Root() { id }: Photo): Promise<number | null> {
+    try {
+      const likes = await client.like.count({ where: { photoId: id } });
+      if (!likes) {
+        throw new Error("Likes not found.");
+      }
+      return likes;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 }

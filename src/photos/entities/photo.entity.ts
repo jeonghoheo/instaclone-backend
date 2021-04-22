@@ -24,6 +24,10 @@ export class Photo extends Common {
   @IsString()
   readonly caption?: string;
 
+  @Field((type) => Number, { nullable: true })
+  @IsNumber()
+  readonly likes?: number;
+
   @Field((type) => [HashTag], { nullable: true })
   @IsOptional()
   readonly hashtags?: HashTag[];

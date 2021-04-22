@@ -61,16 +61,6 @@ type HashTag {
   updatedAt: DateTime!
 }
 
-type Like {
-  createdAt: DateTime!
-  id: Int!
-  photo: Photo!
-  photoId: Int!
-  updatedAt: DateTime!
-  user: User!
-  userId: Int!
-}
-
 input LoginInput {
   password: String!
   username: String!
@@ -99,6 +89,7 @@ type Photo {
   file: String!
   hashtags: [HashTag!]
   id: Int!
+  likes: Float
   updatedAt: DateTime!
   user: User
   userId: Float!
@@ -110,6 +101,7 @@ type Query {
   seeFollowing(input: SeeFollowingInupt!): SeeFollowingOutput!
   seeHashtag(hashtag: String!): SeeHashTagOutput!
   seePhoto(id: Float!): SeePhotoOutput!
+  seePhotoLikes(id: Int!): SeePhotoLikesOutput!
   seeProfile(username: String!): SeeProfileOutput!
 }
 
@@ -148,6 +140,12 @@ type SeeHashTagOutput {
   ok: Boolean!
 }
 
+type SeePhotoLikesOutput {
+  error: String
+  likes: [User!]
+  ok: Boolean!
+}
+
 type SeePhotoOutput {
   error: String
   ok: Boolean!
@@ -162,7 +160,6 @@ type SeeProfileOutput {
 
 type ToggleLikeOutput {
   error: String
-  like: Like
   ok: Boolean!
 }
 

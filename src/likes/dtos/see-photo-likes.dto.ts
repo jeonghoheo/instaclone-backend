@@ -1,18 +1,18 @@
 import { IsInt, IsOptional } from "class-validator";
 import { ArgsType, Field, Int, ObjectType } from "type-graphql";
 import { CommonOutput } from "../../common/common.dto";
-import { Like } from "../entities/like.entity";
+import { User } from "../../users/entities/user.entity";
 
 @ArgsType()
-export class ToggleLikeInput {
+export class SeePhotoLikesInput {
   @Field((type) => Int)
   @IsInt()
   readonly id: number;
 }
 
 @ObjectType()
-export class ToggleLikeOutput extends CommonOutput {
-  @Field((type) => Like, { nullable: true })
+export class SeePhotoLikesOutput extends CommonOutput {
+  @Field((type) => [User], { nullable: true })
   @IsOptional()
-  readonly like?: Like;
+  readonly likes?: User[];
 }
