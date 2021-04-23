@@ -19,6 +19,10 @@ import {
   SearchPhotosOutput
 } from "./dtos/search-photos.dto";
 import { SeeFeedOutput } from "./dtos/see-feed.dto";
+import {
+  SeePhotoCommentsInput,
+  SeePhotoCommentsOutput
+} from "./dtos/see-photo-comments.dto";
 import { SeePhotoOutput } from "./dtos/see-photo.dto";
 import { UploadPhotoInput, UploadPhotoOutput } from "./dtos/upload-photo.dto";
 import { Photo } from "./entities/photo.entity";
@@ -212,6 +216,40 @@ export class PhotoResovler {
     }
   }
 
+  @Query((returns) => SeePhotoCommentsOutput)
+  async seePhotoComments(@Args() { id }: SeePhotoCommentsInput) {
+    try {
+      const comments = await client.comment.findMany({
+        where: {
+          photoId: id
+        },
+        include: {
+          user: true,
+          photo: true
+        },
+        orderBy: {
+          createdAt: "asc"
+        }
+      });
+      if (!comments) {
+        return {
+          ok: false,
+          error: "Comments not found."
+        };
+      }
+      return {
+        ok: true,
+        comments
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: "Can't see comments"
+      };
+    }
+  }
+
   @FieldResolver()
   async user(@Root() { userId }: Photo): Promise<User> {
     try {
@@ -260,6 +298,20 @@ export class PhotoResovler {
         throw new Error("Likes not found.");
       }
       return likes;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
+  @FieldResolver()
+  async comments(@Root() { id }: Photo): Promise<number | null> {
+    try {
+      const comments = await client.comment.count({ where: { photoId: id } });
+      if (!comments) {
+        throw new Error("comments not found.");
+      }
+      return comments;
     } catch (error) {
       console.log(error);
       return null;

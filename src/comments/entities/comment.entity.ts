@@ -12,7 +12,7 @@ export class Comment extends Common {
   readonly id: number;
 
   @Field((type) => User)
-  readonly user?: User;
+  readonly user: User;
 
   @Field((type) => Photo)
   readonly photo: Photo;

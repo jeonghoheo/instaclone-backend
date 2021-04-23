@@ -3,6 +3,16 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type Comment {
+  createdAt: DateTime!
+  id: Int!
+  isMine: Boolean
+  payload: String!
+  photo: Photo!
+  updatedAt: DateTime!
+  user: User!
+}
+
 input CreateAccountInput {
   email: String!
   firstName: String!
@@ -91,6 +101,7 @@ type Mutation {
 
 type Photo {
   caption: String
+  comments: Float
   createdAt: DateTime!
   file: String!
   hashtags: [HashTag!]
@@ -109,6 +120,7 @@ type Query {
   seeFollowing(input: SeeFollowingInupt!): SeeFollowingOutput!
   seeHashtag(hashtag: String!): SeeHashTagOutput!
   seePhoto(id: Float!): SeePhotoOutput!
+  seePhotoComments(id: Int!): SeePhotoCommentsOutput!
   seePhotoLikes(id: Int!): SeePhotoLikesOutput!
   seeProfile(username: String!): SeeProfileOutput!
 }
@@ -151,6 +163,12 @@ type SeeFollowingOutput {
 type SeeHashTagOutput {
   error: String
   hashtag: HashTag
+  ok: Boolean!
+}
+
+type SeePhotoCommentsOutput {
+  comments: [Comment!]
+  error: String
   ok: Boolean!
 }
 
