@@ -17,6 +17,11 @@ type CreateAccountOutput {
   user: User
 }
 
+type CreateCommentOutput {
+  error: String
+  ok: Boolean!
+}
+
 """
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
@@ -74,6 +79,7 @@ type LoginOutput {
 
 type Mutation {
   createAccount(input: CreateAccountInput!): CreateAccountOutput!
+  createComment(payload: String!, photoId: Int!): CreateCommentOutput!
   editPhoto(input: EditPhotoInput!): EditPhotoOutput!
   editProfile(input: EditProfileInput!): EditProfileOutput!
   followUser(username: String!): FollowUserOutput!
@@ -89,6 +95,7 @@ type Photo {
   file: String!
   hashtags: [HashTag!]
   id: Int!
+  isMine: Boolean
   likes: Float
   updatedAt: DateTime!
   user: User

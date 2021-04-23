@@ -12,10 +12,17 @@ import { customAuthChecker } from "./common/custom-auth-checker/custom-auth-chec
 import { PhotoResovler } from "./photos/photo.resolver";
 import { HashtagResolver } from "./hashtags/hashtag.resolver";
 import { LikeResolver } from "./likes/like.resolver";
+import { CommentResolver } from "./comments/comment.resolver";
 
 const main = async () => {
   const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
-    resolvers: [UserResolver, PhotoResovler, HashtagResolver, LikeResolver],
+    resolvers: [
+      UserResolver,
+      PhotoResovler,
+      HashtagResolver,
+      LikeResolver,
+      CommentResolver
+    ],
     emitSchemaFile: true,
     validate: true,
     authChecker: customAuthChecker
