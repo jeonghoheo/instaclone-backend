@@ -9,8 +9,10 @@ type Comment {
   isMine: Boolean
   payload: String!
   photo: Photo!
+  photoId: Int!
   updatedAt: DateTime!
   user: User!
+  userId: Int!
 }
 
 input CreateAccountInput {

@@ -1,4 +1,3 @@
-import { HashTag } from ".prisma/client";
 import {
   Arg,
   Args,
@@ -67,5 +66,18 @@ export class CommentResolver {
         error: "Can't create comment"
       };
     }
+  }
+
+  @Authorized()
+  @FieldResolver()
+  isMine(
+    @Root() { userId }: Comment,
+    @Ctx() context: ContextType
+  ): boolean | null {
+    if (!context.user) {
+      return false;
+    }
+
+    return userId === context.user.id;
   }
 }

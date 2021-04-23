@@ -34,6 +34,7 @@ const main = async () => {
     schema,
     uploads: false,
     context: ({ req }) => {
+      console.log(req.headers.authorization);
       const context = {
         authorization: req.headers.authorization
       };

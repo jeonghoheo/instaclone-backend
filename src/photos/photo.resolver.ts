@@ -317,4 +317,16 @@ export class PhotoResovler {
       return null;
     }
   }
+
+  @Authorized()
+  @FieldResolver()
+  isMine(
+    @Root() { userId }: Photo,
+    @Ctx() { user }: ContextType
+  ): boolean | null {
+    if (!userId) {
+      return false;
+    }
+    return userId === user.id;
+  }
 }

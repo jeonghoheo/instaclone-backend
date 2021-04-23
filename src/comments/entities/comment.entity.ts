@@ -1,4 +1,4 @@
-import { IsInt, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsInt, IsOptional, IsString } from "class-validator";
 import { Field, InputType, Int, ObjectType } from "type-graphql";
 import { Common } from "../../common/common.dto";
 import { Photo } from "../../photos/entities/photo.entity";
@@ -10,6 +10,14 @@ export class Comment extends Common {
   @Field((type) => Int)
   @IsInt()
   readonly id: number;
+
+  @Field((type) => Int)
+  @IsInt()
+  readonly userId: number;
+
+  @Field((type) => Int)
+  @IsInt()
+  readonly photoId: number;
 
   @Field((type) => User)
   readonly user: User;

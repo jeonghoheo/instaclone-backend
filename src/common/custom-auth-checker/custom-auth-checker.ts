@@ -45,10 +45,8 @@ export const customAuthChecker: AuthChecker<ContextType> = async (
         where: { id: (verifidToken as DecodedToken).id }
       });
       context.user = loginedUser;
-      return true; // or false if access is denied
-    } else {
-      return false;
     }
+    return true; // or false if access is denied
   } catch (error) {
     console.log(error);
     return false;
