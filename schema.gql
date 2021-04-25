@@ -49,6 +49,11 @@ type DeletePhotoOutput {
   ok: Boolean!
 }
 
+type EditCommentOutput {
+  error: String
+  ok: Boolean!
+}
+
 input EditPhotoInput {
   caption: String!
   id: Float!
@@ -104,6 +109,7 @@ type Mutation {
   createComment(payload: String!, photoId: Int!): CreateCommentOutput!
   deleteComment(id: Int!): DeleteCommentOutput!
   deletePhoto(id: Int!): DeletePhotoOutput!
+  editComment(id: Int!, payload: String!): EditCommentOutput!
   editPhoto(input: EditPhotoInput!): EditPhotoOutput!
   editProfile(input: EditProfileInput!): EditProfileOutput!
   followUser(username: String!): FollowUserOutput!

@@ -20,6 +20,7 @@ import {
   DeleteCommentInput,
   DeleteCommentOutput
 } from "./dtos/delete-comment.dto";
+import { EditCommentInput, EditCommentOutput } from "./dtos/edit-comment.dto";
 
 import { Comment } from "./entities/comment.entity";
 
@@ -113,6 +114,53 @@ export class CommentResolver {
       return {
         ok: false,
         error: "Can't delete comment"
+      };
+    }
+  }
+
+  @Authorized([Roles.AUTH])
+  @Mutation((returns) => EditCommentOutput)
+  async editComment(
+    @Args() { id, payload }: EditCommentInput,
+    @Ctx() { user }: ContextType
+  ): Promise<EditCommentOutput> {
+    try {
+      const comment = await client.comment.findUnique({
+        where: {
+          id
+        },
+        select: {
+          userId: true
+        }
+      });
+      if (!comment) {
+        return {
+          ok: false,
+          error: "Cooment not found."
+        };
+      } else if (comment.userId !== user.id) {
+        return {
+          ok: false,
+          error: "Not authorized."
+        };
+      } else {
+        await client.comment.update({
+          where: {
+            id
+          },
+          data: {
+            payload
+          }
+        });
+        return {
+          ok: true
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: "Can't edit comment."
       };
     }
   }
