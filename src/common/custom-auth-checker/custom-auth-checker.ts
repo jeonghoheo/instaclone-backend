@@ -3,6 +3,9 @@ import * as jwt from "jsonwebtoken";
 import client from "../../client";
 import { User } from "../../users/entities/user.entity";
 
+export enum Roles {
+  AUTH = "AUTH"
+}
 interface DecodedToken {
   id: number;
   lat: number;
@@ -45,6 +48,9 @@ export const customAuthChecker: AuthChecker<ContextType> = async (
         where: { id: (verifidToken as DecodedToken).id }
       });
       context.user = loginedUser;
+    }
+    if (roles === [Roles.AUTH] && !context.user) {
+      return false;
     }
     return true; // or false if access is denied
   } catch (error) {

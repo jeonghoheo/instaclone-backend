@@ -1,20 +1,25 @@
 import {
-  Arg,
   Args,
   Authorized,
   Ctx,
   FieldResolver,
   Mutation,
-  Query,
   Resolver,
   Root
 } from "type-graphql";
 import client from "../client";
-import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
+import {
+  ContextType,
+  Roles
+} from "../common/custom-auth-checker/custom-auth-checker";
 import {
   CreateCommentInput,
   CreateCommentOutput
 } from "./dtos/create-comment.dto";
+import {
+  DeleteCommentInput,
+  DeleteCommentOutput
+} from "./dtos/delete-comment.dto";
 
 import { Comment } from "./entities/comment.entity";
 
@@ -64,6 +69,50 @@ export class CommentResolver {
       return {
         ok: false,
         error: "Can't create comment"
+      };
+    }
+  }
+
+  @Authorized([Roles.AUTH])
+  @Mutation((returns) => DeleteCommentOutput)
+  async deleteComment(
+    @Args() { id }: DeleteCommentInput,
+    @Ctx() { user }: ContextType
+  ): Promise<CreateCommentOutput> {
+    try {
+      const comment = await client.comment.findUnique({
+        where: {
+          id
+        },
+        select: {
+          userId: true
+        }
+      });
+      if (!comment) {
+        return {
+          ok: false,
+          error: "Comment not found."
+        };
+      } else if (comment.userId !== user.id) {
+        return {
+          ok: false,
+          error: "Not authorized."
+        };
+      } else {
+        await client.comment.delete({
+          where: {
+            id
+          }
+        });
+        return {
+          ok: true
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: "Can't delete comment"
       };
     }
   }

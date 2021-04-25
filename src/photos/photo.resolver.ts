@@ -11,8 +11,12 @@ import {
   Root
 } from "type-graphql";
 import client from "../client";
-import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
+import {
+  ContextType,
+  Roles
+} from "../common/custom-auth-checker/custom-auth-checker";
 import { User } from "../users/entities/user.entity";
+import { DeletePhotoInput, DeletePhotoOutput } from "./dtos/delete-photo.dto";
 import { EditPhotoInput, EditPhotoOutput } from "./dtos/edit-photo.dto";
 import {
   SearchPhotosInput,
@@ -246,6 +250,60 @@ export class PhotoResovler {
       return {
         ok: false,
         error: "Can't see comments"
+      };
+    }
+  }
+
+  @Authorized([Roles.AUTH])
+  @Mutation((returns) => DeletePhotoOutput)
+  async deletePhoto(
+    @Args() { id }: DeletePhotoInput,
+    @Ctx() { user }: ContextType
+  ): Promise<DeletePhotoOutput> {
+    try {
+      const photo = await client.photo.findUnique({
+        where: {
+          id
+        },
+        select: {
+          userId: true
+        }
+      });
+      if (!photo) {
+        return {
+          ok: false,
+          error: "Photo not found."
+        };
+      } else if (photo.userId !== user.id) {
+        return {
+          ok: false,
+          error: "Not authorized."
+        };
+      } else {
+        await client.like.deleteMany({
+          where: {
+            photoId: id
+          }
+        });
+        await client.comment.deleteMany({
+          where: {
+            photoId: id
+          }
+        });
+        await client.photo.delete({
+          where: {
+            id
+          }
+        });
+        return {
+          ok: true
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: "Can't delete photo"
       };
     }
   }
