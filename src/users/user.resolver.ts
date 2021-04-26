@@ -36,7 +36,7 @@ import {
   SeeFollowingOutput
 } from "./dtos/see-following.dto";
 import { Photo } from "../photos/entities/photo.entity";
-import { uploadPhoto } from "../shared/shared.utils";
+import { uploadToS3 } from "../shared/shared.utils";
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -143,7 +143,7 @@ export class UserResolver {
   ): Promise<EditProfileOutput> {
     let avatarUrl: string;
     if (avatar) {
-      avatarUrl = await uploadPhoto(avatar, user.id);
+      avatarUrl = await uploadToS3(avatar, user.id, "avatars");
       // const { filename, createReadStream } = await avatar;
       // const newFileName = `${context.user.id}-${Date.now()}-${filename}`;
       // const readStream = createReadStream();

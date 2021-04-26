@@ -15,6 +15,7 @@ import {
   ContextType,
   Roles
 } from "../common/custom-auth-checker/custom-auth-checker";
+import { uploadToS3 } from "../shared/shared.utils";
 import { User } from "../users/entities/user.entity";
 import { DeletePhotoInput, DeletePhotoOutput } from "./dtos/delete-photo.dto";
 import { EditPhotoInput, EditPhotoOutput } from "./dtos/edit-photo.dto";
@@ -44,9 +45,12 @@ export class PhotoResovler {
       if (caption) {
         hashtagObj = processHashtags(caption);
       }
+
+      const fileUrl = await uploadToS3(file, user.id, "uploads");
+
       const photo = await client.photo.create({
         data: {
-          file,
+          file: fileUrl,
           caption,
           user: {
             connect: {
@@ -63,6 +67,7 @@ export class PhotoResovler {
         photo
       };
     } catch (error) {
+      console.log(error);
       return {
         ok: false,
         error: "Can't upload photo"

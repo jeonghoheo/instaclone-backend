@@ -2,12 +2,12 @@ import { IsOptional, IsString } from "class-validator";
 import { Field, InputType, ObjectType } from "type-graphql";
 import { CommonOutput } from "../../common/common.dto";
 import { Photo } from "../entities/photo.entity";
+import { FileUpload, GraphQLUpload as Upload } from "graphql-upload";
 
 @InputType()
 export class UploadPhotoInput {
-  @Field((type) => String)
-  @IsString()
-  readonly file: string;
+  @Field((type) => Upload)
+  readonly file: FileUpload;
 
   @Field((type) => String)
   @IsOptional()

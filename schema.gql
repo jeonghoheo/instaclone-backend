@@ -225,7 +225,7 @@ scalar Upload
 
 input UploadPhotoInput {
   caption: String!
-  file: String!
+  file: Upload!
 }
 
 type UploadPhotoOutput {
