@@ -36,6 +36,7 @@ import {
   SeeFollowingOutput
 } from "./dtos/see-following.dto";
 import { Photo } from "../photos/entities/photo.entity";
+import { uploadPhoto } from "../shared/shared.utils";
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -138,18 +139,19 @@ export class UserResolver {
       bio,
       avatar
     }: EditProfileInput,
-    @Ctx() context: ContextType
+    @Ctx() { user }: ContextType
   ): Promise<EditProfileOutput> {
     let avatarUrl: string;
     if (avatar) {
-      const { filename, createReadStream } = await avatar;
-      const newFileName = `${context.user.id}-${Date.now()}-${filename}`;
-      const readStream = createReadStream();
-      const writeStream = createWriteStream(
-        `${process.cwd()}/uploads/${newFileName}`
-      );
-      readStream.pipe(writeStream);
-      avatarUrl = `http://localhost:4000/static/${newFileName}`;
+      avatarUrl = await uploadPhoto(avatar, user.id);
+      // const { filename, createReadStream } = await avatar;
+      // const newFileName = `${context.user.id}-${Date.now()}-${filename}`;
+      // const readStream = createReadStream();
+      // const writeStream = createWriteStream(
+      //   `${process.cwd()}/uploads/${newFileName}`
+      // );
+      // readStream.pipe(writeStream);
+      // avatarUrl = `http://localhost:4000/static/${newFileName}`;
     }
 
     try {
@@ -158,7 +160,7 @@ export class UserResolver {
         uglyPassword = await bcrypt.hash(newPassword, 10);
       }
       const updatedUser = await client.user.update({
-        where: { id: context.user.id },
+        where: { id: user.id },
         data: {
           firstName,
           lastName,

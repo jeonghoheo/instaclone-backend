@@ -1,6 +1,6 @@
 require("dotenv").config();
 import "reflect-metadata";
-import * as express from "express";
+import express from "express";
 import expressPlayground from "graphql-playground-middleware-express";
 import { ApolloServer } from "apollo-server-express";
 import { graphqlHTTP } from "express-graphql";
