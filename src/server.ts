@@ -13,6 +13,7 @@ import { PhotoResovler } from "./photos/photo.resolver";
 import { HashtagResolver } from "./hashtags/hashtag.resolver";
 import { LikeResolver } from "./likes/like.resolver";
 import { CommentResolver } from "./comments/comment.resolver";
+import { RoomResolver } from "./rooms/room.resolver";
 
 const main = async () => {
   const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
@@ -21,7 +22,8 @@ const main = async () => {
       PhotoResovler,
       HashtagResolver,
       LikeResolver,
-      CommentResolver
+      CommentResolver,
+      RoomResolver
     ],
     emitSchemaFile: true,
     validate: true,
