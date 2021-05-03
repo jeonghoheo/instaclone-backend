@@ -11,8 +11,8 @@ export class Message extends Common {
   @IsString()
   readonly payload: string;
 
-  @Field((type) => [User])
-  readonly users: User[];
+  @Field((type) => User)
+  readonly user: User;
 
   @Field((type) => Room)
   readonly room: Room;
