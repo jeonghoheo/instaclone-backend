@@ -124,8 +124,8 @@ type Mutation {
   editProfile(input: EditProfileInput!): EditProfileOutput!
   followUser(username: String!): FollowUserOutput!
   login(input: LoginInput!): LoginOutput!
-  seeRoom(id: Int!): SeeRoomOutput!
-  seeRooms: SeeRoomsOutput!
+  readMessage(id: Int!): ReadMessageOutput!
+  sendMessage(payload: String!, roomId: Int, userId: Int): SendMessageOutput!
   toggleLike(id: Int!): ToggleLikeOutput!
   unFollowUser(username: String!): UnFollowUserOutput!
   uploadPhoto(input: UploadPhotoInput!): UploadPhotoOutput!
@@ -155,6 +155,13 @@ type Query {
   seePhotoComments(id: Int!): SeePhotoCommentsOutput!
   seePhotoLikes(id: Int!): SeePhotoLikesOutput!
   seeProfile(username: String!): SeeProfileOutput!
+  seeRoom(id: Int!): SeeRoomOutput!
+  seeRooms: SeeRoomsOutput!
+}
+
+type ReadMessageOutput {
+  error: String
+  ok: Boolean!
 }
 
 type Room {
@@ -241,6 +248,11 @@ type SeeRoomsOutput {
   error: String
   ok: Boolean!
   rooms: [Room!]
+}
+
+type SendMessageOutput {
+  error: String
+  ok: Boolean!
 }
 
 type ToggleLikeOutput {

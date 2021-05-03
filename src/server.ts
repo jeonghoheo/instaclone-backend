@@ -14,6 +14,7 @@ import { HashtagResolver } from "./hashtags/hashtag.resolver";
 import { LikeResolver } from "./likes/like.resolver";
 import { CommentResolver } from "./comments/comment.resolver";
 import { RoomResolver } from "./rooms/room.resolver";
+import { MessageResolver } from "./messages/message.resolver";
 
 const main = async () => {
   const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
@@ -23,7 +24,8 @@ const main = async () => {
       HashtagResolver,
       LikeResolver,
       CommentResolver,
-      RoomResolver
+      RoomResolver,
+      MessageResolver
     ],
     emitSchemaFile: true,
     validate: true,

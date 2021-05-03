@@ -19,7 +19,7 @@ import { Room } from "./entites/room.entity";
 @Resolver((of) => Room)
 export class RoomResolver {
   @Authorized()
-  @Mutation((returns) => SeeRoomsOutput)
+  @Query((returns) => SeeRoomsOutput)
   async seeRooms(@Ctx() { user }: ContextType): Promise<SeeRoomsOutput> {
     try {
       const rooms = await client.room.findMany({
@@ -44,7 +44,7 @@ export class RoomResolver {
   }
 
   @Authorized()
-  @Mutation((returns) => SeeRoomOutput)
+  @Query((returns) => SeeRoomOutput)
   async seeRoom(
     @Args() { id }: SeeRoomInput,
     @Ctx() { user }: ContextType

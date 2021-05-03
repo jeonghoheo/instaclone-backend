@@ -6,7 +6,7 @@ import { SendMessageInput, SendMessageOutput } from "./dtos/send-message.dto";
 import { Message } from "./entites/message.entity";
 
 @Resolver((of) => Message)
-export class RoomResolver {
+export class MessageResolver {
   @Authorized()
   @Mutation((returns) => SendMessageOutput)
   async sendMessage(
@@ -16,7 +16,7 @@ export class RoomResolver {
     try {
       let room = null;
       if (userId) {
-        const user = await client.user.findUnique({
+        const isUser = await client.user.findUnique({
           where: {
             id: userId
           },
@@ -24,7 +24,7 @@ export class RoomResolver {
             id: true
           }
         });
-        if (!user) {
+        if (!isUser) {
           return {
             ok: false,
             error: "This user does not exist."
@@ -60,25 +60,25 @@ export class RoomResolver {
             error: "Room not found."
           };
         }
-        await client.message.create({
-          data: {
-            payload,
-            room: {
-              connect: {
-                id: room.id
-              }
-            },
-            user: {
-              connect: {
-                id: user.id
-              }
+      }
+      await client.message.create({
+        data: {
+          payload,
+          room: {
+            connect: {
+              id: room.id
+            }
+          },
+          user: {
+            connect: {
+              id: user.id
             }
           }
-        });
-        return {
-          ok: true
-        };
-      }
+        }
+      });
+      return {
+        ok: true
+      };
     } catch (error) {
       return {
         ok: false,
