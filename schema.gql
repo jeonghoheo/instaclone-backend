@@ -104,6 +104,16 @@ type LoginOutput {
   token: String
 }
 
+type Message {
+  createdAt: DateTime!
+  id: Int!
+  payload: String!
+  read: Boolean!
+  room: Room!
+  updatedAt: DateTime!
+  user: User!
+}
+
 type Mutation {
   createAccount(input: CreateAccountInput!): CreateAccountOutput!
   createComment(payload: String!, photoId: Int!): CreateCommentOutput!
@@ -114,6 +124,8 @@ type Mutation {
   editProfile(input: EditProfileInput!): EditProfileOutput!
   followUser(username: String!): FollowUserOutput!
   login(input: LoginInput!): LoginOutput!
+  seeRoom(id: Int!): SeeRoomOutput!
+  seeRooms: SeeRoomsOutput!
   toggleLike(id: Int!): ToggleLikeOutput!
   unFollowUser(username: String!): UnFollowUserOutput!
   uploadPhoto(input: UploadPhotoInput!): UploadPhotoOutput!
@@ -143,6 +155,15 @@ type Query {
   seePhotoComments(id: Int!): SeePhotoCommentsOutput!
   seePhotoLikes(id: Int!): SeePhotoLikesOutput!
   seeProfile(username: String!): SeeProfileOutput!
+}
+
+type Room {
+  createdAt: DateTime!
+  id: Int!
+  messages: [Message!]
+  unreadTotal: Float
+  updatedAt: DateTime!
+  users: [User!]
 }
 
 type SearchPhotosOutput {
@@ -208,6 +229,18 @@ type SeeProfileOutput {
   error: String
   ok: Boolean!
   user: User
+}
+
+type SeeRoomOutput {
+  error: String
+  ok: Boolean!
+  room: Room
+}
+
+type SeeRoomsOutput {
+  error: String
+  ok: Boolean!
+  rooms: [Room!]
 }
 
 type ToggleLikeOutput {

@@ -1,6 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import client from "../client";
 import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
+import { ReadMessageInput, ReadMessageOutput } from "./dtos/read-message.dto";
 import { SendMessageInput, SendMessageOutput } from "./dtos/send-message.dto";
 import { Message } from "./entites/message.entity";
 
@@ -82,6 +83,56 @@ export class RoomResolver {
       return {
         ok: false,
         error: "Can't send Message"
+      };
+    }
+  }
+
+  @Authorized()
+  @Mutation((returns) => ReadMessageOutput)
+  async readMessage(
+    @Args() { id }: ReadMessageInput,
+    @Ctx() { user }: ContextType
+  ): Promise<ReadMessageOutput> {
+    try {
+      const message = await client.message.findFirst({
+        where: {
+          id,
+          userId: {
+            not: user.id
+          },
+          room: {
+            users: {
+              some: {
+                id: user.id
+              }
+            }
+          }
+        },
+        select: {
+          id: true
+        }
+      });
+      if (!message) {
+        return {
+          ok: false,
+          error: "Message not found."
+        };
+      }
+      await client.message.update({
+        where: {
+          id
+        },
+        data: {
+          read: true
+        }
+      });
+      return {
+        ok: true
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: "Can't read message."
       };
     }
   }

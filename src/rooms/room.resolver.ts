@@ -115,7 +115,27 @@ export class RoomResolver {
 
   @Authorized()
   @FieldResolver()
-  async unreadTotal(@Root() { id }: Room): Promise<number> {
-    return 0;
+  async unreadTotal(
+    @Root() { id }: Room,
+    @Ctx() { user }: ContextType
+  ): Promise<number> {
+    try {
+      if (!user) {
+        return 0;
+      }
+      return await client.message.count({
+        where: {
+          read: false,
+          roomId: id,
+          user: {
+            id: {
+              not: user.id
+            }
+          }
+        }
+      });
+    } catch (error) {
+      return 0;
+    }
   }
 }

@@ -1,3 +1,4 @@
+import { IsNumber, IsOptional } from "class-validator";
 import { Field, InputType, ObjectType } from "type-graphql";
 import { Common } from "../../common/common.dto";
 import { Message } from "../../messages/entites/message.entity";
@@ -11,4 +12,9 @@ export class Room extends Common {
 
   @Field((type) => [Message], { nullable: true })
   readonly messages?: Message[];
+
+  @Field((type) => Number, { nullable: true })
+  @IsOptional()
+  @IsNumber()
+  readonly unreadTotal?: number;
 }
