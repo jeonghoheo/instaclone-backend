@@ -1,1 +1,3 @@
-export const NEW_MESSAGE = "NEW_MESSAGE";
+export enum TOPICS {
+  NEW_MESSAGE = "NEW_MESSAGE"
+}

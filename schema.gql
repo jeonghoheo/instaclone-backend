@@ -109,9 +109,9 @@ type Message {
   id: Int!
   payload: String!
   read: Boolean!
-  room: Room!
+  room: Room
   updatedAt: DateTime!
-  user: User!
+  user: User
 }
 
 type Mutation {
@@ -175,8 +175,8 @@ type Room {
 
 type RoomUpdatesOutput {
   error: String
+  message: Message
   ok: Boolean!
-  room: Message
 }
 
 type SearchPhotosOutput {

@@ -1,6 +1,20 @@
-import { Args, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Args,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Publisher,
+  PubSub,
+  Resolver,
+  Root
+} from "type-graphql";
 import client from "../client";
 import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
+import { TOPICS } from "../constants";
+import { RoomUpdatesOutput } from "../rooms/dtos/room-updates.dto";
+import { Room } from "../rooms/entites/room.entity";
+import { User } from "../users/entities/user.entity";
 import { ReadMessageInput, ReadMessageOutput } from "./dtos/read-message.dto";
 import { SendMessageInput, SendMessageOutput } from "./dtos/send-message.dto";
 import { Message } from "./entites/message.entity";
@@ -11,7 +25,9 @@ export class MessageResolver {
   @Mutation((returns) => SendMessageOutput)
   async sendMessage(
     @Args() { payload, roomId, userId }: SendMessageInput,
-    @Ctx() { user }: ContextType
+    @Ctx() { user }: ContextType,
+    @PubSub(TOPICS.NEW_MESSAGE)
+    publish: Publisher<RoomUpdatesOutput>
   ): Promise<SendMessageOutput> {
     try {
       let room = null;
@@ -61,7 +77,7 @@ export class MessageResolver {
           };
         }
       }
-      await client.message.create({
+      const message = await client.message.create({
         data: {
           payload,
           room: {
@@ -75,6 +91,11 @@ export class MessageResolver {
             }
           }
         }
+      });
+
+      await publish({
+        ok: true,
+        message
       });
       return {
         ok: true
@@ -134,6 +155,48 @@ export class MessageResolver {
         ok: false,
         error: "Can't read message."
       };
+    }
+  }
+
+  @FieldResolver()
+  async user(@Root() { id }: Message): Promise<User | null> {
+    try {
+      const { user } = await client.message.findUnique({
+        where: {
+          id
+        },
+        select: {
+          user: true
+        }
+      });
+      if (user) {
+        return user;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
+    }
+  }
+
+  @FieldResolver()
+  async room(@Root() { id }: Message): Promise<Room | null> {
+    try {
+      const { room } = await client.message.findUnique({
+        where: {
+          id
+        },
+        select: {
+          room: true
+        }
+      });
+      if (room) {
+        return room;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
     }
   }
 }

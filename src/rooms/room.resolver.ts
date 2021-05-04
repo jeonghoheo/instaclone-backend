@@ -10,7 +10,7 @@ import {
 } from "type-graphql";
 import client from "../client";
 import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
-import { NEW_MESSAGE } from "../constants";
+import { TOPICS } from "../constants";
 import { Message } from "../messages/entites/message.entity";
 import { User } from "../users/entities/user.entity";
 import { RoomUpdatesOutput } from "./dtos/room-updates.dto";
@@ -75,19 +75,10 @@ export class RoomResolver {
   }
 
   @Subscription((returns) => RoomUpdatesOutput, {
-    topics: NEW_MESSAGE
+    topics: TOPICS.NEW_MESSAGE
   })
-  async roomUpdates(): Promise<RoomUpdatesOutput> {
-    try {
-      return {
-        ok: true
-      };
-    } catch (error) {
-      return {
-        ok: false,
-        error: "Can't subscribe a message"
-      };
-    }
+  roomUpdates(@Root() payload: RoomUpdatesOutput): RoomUpdatesOutput {
+    return payload;
   }
 
   @Authorized()

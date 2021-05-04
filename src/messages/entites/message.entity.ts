@@ -11,11 +11,11 @@ export class Message extends Common {
   @IsString()
   readonly payload: string;
 
-  @Field((type) => User)
-  readonly user: User;
+  @Field((type) => User, { nullable: true })
+  readonly user?: User;
 
-  @Field((type) => Room)
-  readonly room: Room;
+  @Field((type) => Room, { nullable: true })
+  readonly room?: Room;
 
   @Field((type) => Boolean)
   @IsBoolean()

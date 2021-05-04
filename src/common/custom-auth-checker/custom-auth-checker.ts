@@ -49,9 +49,6 @@ export const customAuthChecker: AuthChecker<ContextType> = async (
       });
       context.user = loginedUser;
     }
-    if (roles === [Roles.AUTH] && !context.user) {
-      return false;
-    }
     return true; // or false if access is denied
   } catch (error) {
     console.log(error);

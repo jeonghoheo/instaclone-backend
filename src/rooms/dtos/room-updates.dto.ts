@@ -5,5 +5,5 @@ import { Message } from "../../messages/entites/message.entity";
 @ObjectType()
 export class RoomUpdatesOutput extends CommonOutput {
   @Field((type) => Message, { nullable: true })
-  readonly room?: Message;
+  readonly message?: Message;
 }

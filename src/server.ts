@@ -1,5 +1,6 @@
 require("dotenv").config();
 import "reflect-metadata";
+import http from "http";
 import express from "express";
 import expressPlayground from "graphql-playground-middleware-express";
 import { ApolloServer } from "apollo-server-express";
@@ -15,7 +16,6 @@ import { LikeResolver } from "./likes/like.resolver";
 import { CommentResolver } from "./comments/comment.resolver";
 import { RoomResolver } from "./rooms/room.resolver";
 import { MessageResolver } from "./messages/message.resolver";
-import pubsub from "./pubsub";
 
 const main = async () => {
   const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
@@ -32,24 +32,31 @@ const main = async () => {
     validate: true,
     authChecker: customAuthChecker
   });
+
   const schema = makeExecutableSchema({ typeDefs, resolvers });
 
   const server = new ApolloServer({
     schema,
     uploads: false,
-    subscriptions: "/subscriptions",
     context: ({ req }) => {
-      console.log(req.headers.authorization);
-      const context = {
-        authorization: req.headers.authorization
-      };
-      return context;
+      if (req) {
+        const context = {
+          authorization: req.headers.authorization
+        };
+        return context;
+      }
     }
   });
   await server.start();
   const app = express();
 
-  app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
+  app.get(
+    "/playground",
+    expressPlayground({
+      endpoint: "/graphql",
+      subscriptionEndpoint: "/graphql"
+    })
+  );
   app.use("/static", express.static("uploads"));
   app.use(
     "/graphql",
@@ -60,8 +67,10 @@ const main = async () => {
   const PORT = process.env.PORT;
 
   server.applyMiddleware({ app });
+  const httpServer = http.createServer(app);
+  server.installSubscriptionHandlers(httpServer);
 
-  app.listen({ port: PORT }, () => {
+  httpServer.listen(PORT, () => {
     console.log(
       `🚀 Sever is running on http://localhost:${PORT}${server.graphqlPath} ✅`
     );
