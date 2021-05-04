@@ -173,6 +173,12 @@ type Room {
   users: [User!]
 }
 
+type RoomUpdatesOutput {
+  error: String
+  ok: Boolean!
+  room: Message
+}
+
 type SearchPhotosOutput {
   error: String
   ok: Boolean!
@@ -253,6 +259,10 @@ type SeeRoomsOutput {
 type SendMessageOutput {
   error: String
   ok: Boolean!
+}
+
+type Subscription {
+  roomUpdates: RoomUpdatesOutput!
 }
 
 type ToggleLikeOutput {

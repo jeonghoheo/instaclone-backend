@@ -15,6 +15,7 @@ import { LikeResolver } from "./likes/like.resolver";
 import { CommentResolver } from "./comments/comment.resolver";
 import { RoomResolver } from "./rooms/room.resolver";
 import { MessageResolver } from "./messages/message.resolver";
+import pubsub from "./pubsub";
 
 const main = async () => {
   const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
@@ -31,12 +32,12 @@ const main = async () => {
     validate: true,
     authChecker: customAuthChecker
   });
-
   const schema = makeExecutableSchema({ typeDefs, resolvers });
 
   const server = new ApolloServer({
     schema,
     uploads: false,
+    subscriptions: "/subscriptions",
     context: ({ req }) => {
       console.log(req.headers.authorization);
       const context = {
@@ -46,7 +47,6 @@ const main = async () => {
     }
   });
   await server.start();
-
   const app = express();
 
   app.get("/playground", expressPlayground({ endpoint: "/graphql" }));

@@ -3,15 +3,17 @@ import {
   Authorized,
   Ctx,
   FieldResolver,
-  Mutation,
   Query,
   Resolver,
-  Root
+  Root,
+  Subscription
 } from "type-graphql";
 import client from "../client";
 import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
+import { NEW_MESSAGE } from "../constants";
 import { Message } from "../messages/entites/message.entity";
 import { User } from "../users/entities/user.entity";
+import { RoomUpdatesOutput } from "./dtos/room-updates.dto";
 import { SeeRoomInput, SeeRoomOutput } from "./dtos/see-room.dto";
 import { SeeRoomsOutput } from "./dtos/see-rooms.dto";
 import { Room } from "./entites/room.entity";
@@ -68,6 +70,22 @@ export class RoomResolver {
       return {
         ok: false,
         error: "Can't see Room"
+      };
+    }
+  }
+
+  @Subscription((returns) => RoomUpdatesOutput, {
+    topics: NEW_MESSAGE
+  })
+  async roomUpdates(): Promise<RoomUpdatesOutput> {
+    try {
+      return {
+        ok: true
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: "Can't subscribe a message"
       };
     }
   }
