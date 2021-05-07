@@ -13,7 +13,7 @@ import { ContextType } from "../common/custom-auth-checker/custom-auth-checker";
 import { TOPICS } from "../constants";
 import { Message } from "../messages/entites/message.entity";
 import { User } from "../users/entities/user.entity";
-import { RoomUpdatesOutput } from "./dtos/room-updates.dto";
+import { RoomUpdatesInput, RoomUpdatesOutput } from "./dtos/room-updates.dto";
 import { SeeRoomInput, SeeRoomOutput } from "./dtos/see-room.dto";
 import { SeeRoomsOutput } from "./dtos/see-rooms.dto";
 import { Room } from "./entites/room.entity";
@@ -75,9 +75,15 @@ export class RoomResolver {
   }
 
   @Subscription((returns) => RoomUpdatesOutput, {
-    topics: TOPICS.NEW_MESSAGE
+    topics: TOPICS.NEW_MESSAGE,
+    filter: ({ payload: { message }, args: { id } }) => {
+      return message.roomId === id;
+    }
   })
-  roomUpdates(@Root() payload: RoomUpdatesOutput): RoomUpdatesOutput {
+  roomUpdates(
+    @Root() payload: RoomUpdatesOutput,
+    @Args() { id }: RoomUpdatesInput
+  ): RoomUpdatesOutput {
     return payload;
   }
 

@@ -262,7 +262,7 @@ type SendMessageOutput {
 }
 
 type Subscription {
-  roomUpdates: RoomUpdatesOutput!
+  roomUpdates(id: Int!): RoomUpdatesOutput!
 }
 
 type ToggleLikeOutput {
