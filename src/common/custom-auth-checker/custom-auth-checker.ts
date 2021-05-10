@@ -29,6 +29,7 @@ export interface ContextType {
     "accept-language": string;
   };
   user?: User;
+  websocket?: WebSocket;
 }
 
 export const customAuthChecker: AuthChecker<ContextType> = async (
@@ -53,5 +54,25 @@ export const customAuthChecker: AuthChecker<ContextType> = async (
   } catch (error) {
     console.log(error);
     return false;
+  }
+};
+
+export const getUser = async (authorization: string): Promise<User | null> => {
+  try {
+    const verifidToken = await jwt.verify(
+      authorization,
+      process.env.SECRET_KEY
+    );
+    const loginedUser = await client.user.findUnique({
+      where: { id: (verifidToken as DecodedToken).id }
+    });
+    if (loginedUser) {
+      return loginedUser;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.log(error);
+    return null;
   }
 };

@@ -76,7 +76,31 @@ export class RoomResolver {
 
   @Subscription((returns) => RoomUpdatesOutput, {
     topics: TOPICS.NEW_MESSAGE,
-    filter: ({ payload: { message }, args: { id } }) => {
+    filter: async ({
+      payload: { message },
+      args: { id },
+      context: { user, websocket }
+    }) => {
+      const wst: WebSocket = websocket;
+      if (message.roomId === id) {
+        const room = await client.room.findFirst({
+          where: {
+            id,
+            users: {
+              some: {
+                id: user.id
+              }
+            }
+          },
+          select: {
+            id: true
+          }
+        });
+        if (!room) {
+          wst.close();
+          return false;
+        }
+      }
       return message.roomId === id;
     }
   })

@@ -9,13 +9,17 @@ import { graphqlUploadExpress } from "graphql-upload";
 import { buildTypeDefsAndResolvers } from "type-graphql";
 import { makeExecutableSchema } from "graphql-tools";
 import { UserResolver } from "./users/user.resolver";
-import { customAuthChecker } from "./common/custom-auth-checker/custom-auth-checker";
+import {
+  customAuthChecker,
+  getUser
+} from "./common/custom-auth-checker/custom-auth-checker";
 import { PhotoResovler } from "./photos/photo.resolver";
 import { HashtagResolver } from "./hashtags/hashtag.resolver";
 import { LikeResolver } from "./likes/like.resolver";
 import { CommentResolver } from "./comments/comment.resolver";
 import { RoomResolver } from "./rooms/room.resolver";
 import { MessageResolver } from "./messages/message.resolver";
+import { pubSub } from "./pubsub/pubsub";
 
 const main = async () => {
   const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
@@ -30,7 +34,8 @@ const main = async () => {
     ],
     emitSchemaFile: true,
     validate: true,
-    authChecker: customAuthChecker
+    authChecker: customAuthChecker,
+    pubSub
   });
 
   const schema = makeExecutableSchema({ typeDefs, resolvers });
@@ -38,12 +43,36 @@ const main = async () => {
   const server = new ApolloServer({
     schema,
     uploads: false,
-    context: ({ req }) => {
+    context: ({ req, connection }) => {
       if (req) {
         const context = {
           authorization: req.headers.authorization
         };
         return context;
+      } else {
+        const { context } = connection;
+        return {
+          user: context.user,
+          websocket: context.websocket
+        };
+      }
+    },
+    subscriptions: {
+      onConnect: async (
+        { authorization }: { authorization?: string },
+        websocket
+      ) => {
+        if (!authorization) {
+          throw new Error("You can't listen.");
+        }
+        const user = await getUser(authorization);
+        if (!user) {
+          throw new Error("Login is required.");
+        }
+        return {
+          user,
+          websocket
+        };
       }
     }
   });
