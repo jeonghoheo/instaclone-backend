@@ -1,6 +1,7 @@
 require("dotenv").config();
 import "reflect-metadata";
 import http from "http";
+import cors from "cors";
 import express from "express";
 import expressPlayground from "graphql-playground-middleware-express";
 import { ApolloServer } from "apollo-server-express";
@@ -79,6 +80,7 @@ const main = async () => {
   await server.start();
   const app = express();
 
+  app.use(cors());
   app.get(
     "/playground",
     expressPlayground({
