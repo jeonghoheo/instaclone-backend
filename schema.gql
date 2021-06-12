@@ -104,6 +104,12 @@ type LoginOutput {
   token: String
 }
 
+type MeOutput {
+  error: String
+  me: User
+  ok: Boolean!
+}
+
 type Message {
   createdAt: DateTime!
   id: Int!
@@ -146,6 +152,7 @@ type Photo {
 }
 
 type Query {
+  me: MeOutput!
   searchPhotos(keyword: String!): SearchPhotosOutput!
   seeFeed: SeeFeedOutput!
   seeFollowers(input: SeeFollowersInput!): SeeFollowersOutput!

@@ -37,9 +37,37 @@ import {
 } from "./dtos/see-following.dto";
 import { Photo } from "../photos/entities/photo.entity";
 import { uploadToS3 } from "../shared/shared.utils";
+import { MeOutput } from "./dtos/me.dto";
 
 @Resolver((of) => User)
 export class UserResolver {
+  @Authorized()
+  @Query((returns) => MeOutput)
+  async me(@Ctx() { user }: ContextType): Promise<MeOutput> {
+    try {
+      const me = await client.user.findUnique({
+        where: {
+          id: user.id
+        }
+      });
+      if (!me) {
+        return {
+          ok: false,
+          error: "You are not a correct user"
+        };
+      }
+      return {
+        ok: true,
+        me
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: "You are not a logged in user"
+      };
+    }
+  }
+
   @Query((returns) => SeeProfileOutput)
   async seeProfile(
     @Arg("username") username: string
