@@ -392,4 +392,34 @@ export class PhotoResovler {
     }
     return userId === user.id;
   }
+
+  @Authorized()
+  @FieldResolver()
+  async isLiked(
+    @Root() { id }: Photo,
+    @Ctx() { user }: ContextType
+  ): Promise<boolean> {
+    if (!user) {
+      return false;
+    }
+    try {
+      const ok = await client.like.findUnique({
+        where: {
+          photoId_userId: {
+            photoId: id,
+            userId: user.id
+          }
+        },
+        select: {
+          id: true
+        }
+      });
+      if (ok) {
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
 }
