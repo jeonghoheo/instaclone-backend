@@ -1,5 +1,6 @@
 import { IsNumber, IsOptional, IsString } from "class-validator";
 import { Field, InputType, ObjectType } from "type-graphql";
+import { Comment } from "../../comments/entities/comment.entity";
 import { Common } from "../../common/common.dto";
 import { HashTag } from "../../hashtags/entities/hashtag.entity";
 import { User } from "../../users/entities/user.entity";
@@ -30,7 +31,11 @@ export class Photo extends Common {
 
   @Field((type) => Number, { nullable: true })
   @IsNumber()
-  readonly comments?: number;
+  readonly commentNumber?: number;
+
+  @Field((type) => [Comment], { nullable: true })
+  @IsOptional()
+  readonly comments?: Comment[];
 
   @Field((type) => Boolean, { nullable: true })
   @IsOptional()

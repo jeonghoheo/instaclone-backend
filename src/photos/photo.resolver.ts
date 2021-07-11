@@ -31,6 +31,7 @@ import {
 import { SeePhotoOutput } from "./dtos/see-photo.dto";
 import { UploadPhotoInput, UploadPhotoOutput } from "./dtos/upload-photo.dto";
 import { Photo } from "./entities/photo.entity";
+import { Comment } from "../comments/entities/comment.entity";
 import { processHashtags } from "./photos.utils";
 @Resolver((of) => Photo)
 export class PhotoResovler {
@@ -368,11 +369,33 @@ export class PhotoResovler {
   }
 
   @FieldResolver()
-  async comments(@Root() { id }: Photo): Promise<number | null> {
+  async commentNumber(@Root() { id }: Photo): Promise<number | null> {
     try {
       const comments = await client.comment.count({ where: { photoId: id } });
       if (!comments) {
         throw new Error("comments not found.");
+      }
+      return comments;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
+  @FieldResolver()
+  async comments(@Root() { id }: Photo): Promise<Comment[] | null> {
+    try {
+      const comments = await client.comment.findMany({
+        where: {
+          photoId: id
+        },
+        include: {
+          user: true,
+          photo: true
+        }
+      });
+      if (!comments) {
+        return null;
       }
       return comments;
     } catch (error) {

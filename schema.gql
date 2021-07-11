@@ -139,7 +139,8 @@ type Mutation {
 
 type Photo {
   caption: String
-  comments: Float
+  commentNumber: Float
+  comments: [Comment!]
   createdAt: DateTime!
   file: String!
   hashtags: [HashTag!]
