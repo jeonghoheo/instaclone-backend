@@ -371,11 +371,10 @@ export class PhotoResovler {
   @FieldResolver()
   async commentNumber(@Root() { id }: Photo): Promise<number | null> {
     try {
-      const comments = await client.comment.count({ where: { photoId: id } });
-      if (!comments) {
-        throw new Error("comments not found.");
-      }
-      return comments;
+      const commentNumber = await client.comment.count({
+        where: { photoId: id }
+      });
+      return commentNumber;
     } catch (error) {
       console.log(error);
       return null;
