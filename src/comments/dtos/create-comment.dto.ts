@@ -1,4 +1,4 @@
-import { IsInt, IsString } from "class-validator";
+import { IsIn, IsInt, IsOptional, IsString } from "class-validator";
 import { ArgsType, Field, Int, ObjectType } from "type-graphql";
 import { CommonOutput } from "../../common/common.dto";
 
@@ -14,4 +14,9 @@ export class CreateCommentInput {
 }
 
 @ObjectType()
-export class CreateCommentOutput extends CommonOutput {}
+export class CreateCommentOutput extends CommonOutput {
+  @Field((type) => Int, { nullable: true })
+  @IsOptional()
+  @IsInt()
+  readonly id?: number;
+}

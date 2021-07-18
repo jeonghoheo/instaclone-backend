@@ -47,7 +47,7 @@ export class CommentResolver {
           error: "Photo not found."
         };
       }
-      await client.comment.create({
+      const { id } = await client.comment.create({
         data: {
           payload,
           photo: {
@@ -63,7 +63,8 @@ export class CommentResolver {
         }
       });
       return {
-        ok: true
+        ok: true,
+        id
       };
     } catch (error) {
       console.log(error);
